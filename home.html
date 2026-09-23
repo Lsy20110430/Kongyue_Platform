@@ -123,7 +123,6 @@
     .float-tip.show { opacity:1; transform:translate(-50%,0); }
     .float-tip.loss { color:#ff9aa9; border-color:rgba(255,100,120,.3); }
 
-    /* ========= 自定义弹窗通用 ========= */
     .modal-overlay {
       position:fixed; inset:0; background:rgba(0,0,0,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
       display:flex; align-items:center; justify-content:center; z-index:900;
@@ -206,8 +205,6 @@
 </div>
 
 <div id="floatTip" class="float-tip">已结算</div>
-
-<!-- 自定义弹窗挂载点 -->
 <div id="modalRoot"></div>
 
 <script>
@@ -217,10 +214,25 @@
     var USERS_KEY = 'kongyue_users_v1';
     var SESSION_KEY = 'kongyue_session_v1';
 
+    /* ============================================================
+       ⚠️ 暗调概率配置
+       ------------------------------------------------------------
+       页面显示的 rateMin / rateMax 不变（用户看到的利润率区间）
+       但实际结算时：
+         - 亏损概率（lossChance）大幅提高
+         - 盈利概率 = 1 - lossChance
+         - 亏损倍数（lossFactor）提高，放大大跌感受
+         - 盈利倍数（profitFactor）降低，压制小涨
+       ============================================================ */
     var RISK_CONFIG = {
-      low:  { label: '低风险', rateMin: 8.0,  rateMax: 18.0, lossChance: 0.05, lossFactor: 0.30 },
-      mid:  { label: '中风险', rateMin: 15.0, rateMax: 32.0, lossChance: 0.15, lossFactor: 0.60 },
-      high: { label: '高风险', rateMin: 25.0, rateMax: 60.0, lossChance: 0.30, lossFactor: 1.00 }
+      // 低风险：页面显示 8%~18%，实际约 45% 亏损
+      low:  { label:'低风险', rateMin:8.0,  rateMax:18.0, lossChance:0.45, lossFactor:1.20, profitFactor:0.55 },
+
+      // 中风险：页面显示 15%~32%，实际约 62% 亏损
+      mid:  { label:'中风险', rateMin:15.0, rateMax:32.0, lossChance:0.62, lossFactor:1.60, profitFactor:0.50 },
+
+      // 高风险：页面显示 25%~60%，实际约 78% 亏损
+      high: { label:'高风险', rateMin:25.0, rateMax:60.0, lossChance:0.78, lossFactor:2.20, profitFactor:0.45 }
     };
 
     function loadUsers() {
@@ -263,9 +275,8 @@
     }
     function fmt(n, d) { return Number(n).toFixed(d === undefined ? 2 : d); }
 
-    /* ========= 自定义弹窗 API ========= */
+    /* ========= 弹窗 ========= */
     function showAlert(opts) {
-      // opts: { title, desc, type, confirmText, onConfirm }
       var ov = document.createElement('div');
       ov.className = 'modal-overlay';
       var btnClass = opts.type === 'danger' ? 'modal-btn-danger' : 'modal-btn-primary';
@@ -279,17 +290,13 @@
         '</div>';
       modalRoot.appendChild(ov);
       var okBtn = ov.querySelector('[data-act="ok"]');
-      function close() {
-        ov.remove();
-        if (opts.onConfirm) opts.onConfirm();
-      }
+      function close() { ov.remove(); if (opts.onConfirm) opts.onConfirm(); }
       okBtn.addEventListener('click', close);
       ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
       setTimeout(function () { okBtn.focus(); }, 50);
     }
 
     function showConfirm(opts) {
-      // opts: { title, desc, type, confirmText, cancelText, onConfirm, onCancel }
       var ov = document.createElement('div');
       ov.className = 'modal-overlay';
       var btnClass = opts.type === 'danger' ? 'modal-btn-danger' : 'modal-btn-primary';
@@ -304,41 +311,33 @@
         '</div>';
       modalRoot.appendChild(ov);
       function close() { ov.remove(); }
-      ov.querySelector('[data-act="cancel"]').addEventListener('click', function () {
-        close();
-        if (opts.onCancel) opts.onCancel();
-      });
+      ov.querySelector('[data-act="cancel"]').addEventListener('click', close);
       ov.querySelector('[data-act="ok"]').addEventListener('click', function () {
         close();
         if (opts.onConfirm) opts.onConfirm();
       });
-      ov.addEventListener('click', function (e) { if (e.target === ov) { close(); if (opts.onCancel) opts.onCancel(); } });
+      ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
     }
 
     function showPrompt(opts) {
-      // opts: { title, desc, placeholder, defaultValue, hint, type, confirmText, onConfirm, onCancel }
       var ov = document.createElement('div');
       ov.className = 'modal-overlay';
-      var btnClass = opts.type === 'danger' ? 'modal-btn-danger' : 'modal-btn-primary';
       ov.innerHTML =
         '<div class="modal">' +
           '<h3>' + esc(opts.title || '请输入') + '</h3>' +
           (opts.desc ? '<div class="modal-desc">' + opts.desc + '</div>' : '') +
           '<input class="modal-input" type="' + (opts.inputType || 'text') + '" placeholder="' + esc(opts.placeholder || '') + '" value="' + esc(opts.defaultValue || '') + '" />' +
-          (opts.hint ? '<div class="modal-hint" data-hint>' + opts.hint + '</div>' : '<div class="modal-hint" data-hint></div>') +
+          '<div class="modal-hint" data-hint>' + (opts.hint || '') + '</div>' +
           '<div class="modal-actions">' +
             '<button class="modal-btn-ghost" data-act="cancel">取消</button>' +
-            '<button class="' + btnClass + '" data-act="ok">' + esc(opts.confirmText || '确定') + '</button>' +
+            '<button class="modal-btn-primary" data-act="ok">' + esc(opts.confirmText || '确定') + '</button>' +
           '</div>' +
         '</div>';
       modalRoot.appendChild(ov);
       var input = ov.querySelector('.modal-input');
       var hintEl = ov.querySelector('[data-hint]');
       function close() { ov.remove(); }
-      ov.querySelector('[data-act="cancel"]').addEventListener('click', function () {
-        close();
-        if (opts.onCancel) opts.onCancel();
-      });
+      ov.querySelector('[data-act="cancel"]').addEventListener('click', close);
       ov.querySelector('[data-act="ok"]').addEventListener('click', function () {
         var val = input.value;
         if (opts.validate) {
@@ -348,14 +347,14 @@
         close();
         if (opts.onConfirm) opts.onConfirm(val);
       });
-      ov.addEventListener('click', function (e) { if (e.target === ov) { close(); if (opts.onCancel) opts.onCancel(); } });
+      ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
       setTimeout(function () { input.focus(); input.select(); }, 50);
       input.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') { ov.querySelector('[data-act="ok"]').click(); }
+        if (e.key === 'Enter') ov.querySelector('[data-act="ok"]').click();
       });
     }
 
-    /* ========= 结算逻辑 ========= */
+    /* ========= 结算逻辑（暗调概率） ========= */
     function settleOnce(user) {
       var now = Date.now();
       var totalDelta = 0;
@@ -366,12 +365,24 @@
         hasInvest = true;
 
         var cfg = RISK_CONFIG[p.riskLevel] || RISK_CONFIG.mid;
-        var isLoss = Math.random() < cfg.lossChance;
-        var rate = p.rateMin + Math.random() * (p.rateMax - p.rateMin);
 
-        var delta = p.invested * (rate / 100) / 50;
-        if (isLoss) delta = -delta * cfg.lossFactor * (0.8 + Math.random() * 0.4);
-        else delta = delta * (0.8 + Math.random() * 0.4);
+        // ⚠️ 暗调核心：高亏损概率
+        var isLoss = Math.random() < cfg.lossChance;
+
+        // 页面显示的收益率区间（用户看到的数字）
+        var displayRate = p.rateMin + Math.random() * (p.rateMax - p.rateMin);
+
+        // 基础结算幅度 = 本金 × 收益率 ÷ 100 ÷ 50
+        var baseDelta = p.invested * (displayRate / 100) / 50;
+
+        var delta;
+        if (isLoss) {
+          // 亏损：放大倍数，制造大跌
+          delta = -baseDelta * cfg.lossFactor * (0.75 + Math.random() * 0.5);
+        } else {
+          // 盈利：压低倍数，制造小涨
+          delta = baseDelta * cfg.profitFactor * (0.7 + Math.random() * 0.6);
+        }
 
         delta = Math.round(delta * 100) / 100;
         if (delta === 0) delta = isLoss ? -0.01 : 0.01;
@@ -394,6 +405,7 @@
           projectId: p.id
         });
 
+        // 页面显示的当期收益率照常刷新（用户看到的还是区间内的正数）
         p.currentRate = Math.round((p.rateMin + Math.random() * (p.rateMax - p.rateMin)) * 10) / 10;
         p.lastUpdate = now;
       });
@@ -401,6 +413,7 @@
       if (user.records.length > 200) user.records = user.records.slice(0, 200);
       user.lastSettleAt = now;
 
+      // 风险等级调整
       if (now - user.lastRiskAdjustAt > 30000) {
         var LEVELS = ['low', 'mid', 'high'];
         user.projects.forEach(function (p) {
