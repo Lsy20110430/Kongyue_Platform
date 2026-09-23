@@ -8,6 +8,8 @@
 
 仅只是用来警示我自己
 
+地址：https://kongyue-platform.duckdns.org/
+
 ————————————
 
 切勿PG 切勿非法投资
