@@ -1,0 +1,192 @@
+<!-- ============================================================
+     文件：register.html（注册）
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>空月平台 · 注册</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',sans-serif; }
+    body { background: linear-gradient(145deg,#0b0f1a 0%,#141b2b 100%); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1.2rem; }
+    .card {
+      background: rgba(18,25,40,.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-radius: 32px; box-shadow: 0 20px 50px -15px rgba(0,0,0,.8), inset 0 1px 2px rgba(255,255,255,.06);
+      width: 100%; max-width: 360px; padding: 2rem 1.8rem 1.8rem;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    h1 { font-size:1.9rem; font-weight:600; letter-spacing:-.02em; color:#eef4ff; margin-bottom:.15rem; text-shadow:0 4px 20px rgba(80,140,255,.2); }
+    h1 span { font-size:1.3rem; opacity:.6; font-weight:300; }
+    .subhead { color:#8fa3c9; font-size:.85rem; margin-bottom:1.6rem; border-left:2px solid #5b8cff; padding-left:.7rem; letter-spacing:.3px; text-transform:uppercase; }
+    .form-group { margin-bottom:1rem; }
+    label { display:block; font-size:.7rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#9db1d4; margin-bottom:.35rem; }
+    .input-wrap {
+      display:flex; align-items:center; background:rgba(8,14,24,.7); border-radius:30px; padding:0 1.1rem;
+      border:1px solid #253248; transition:.25s; box-shadow: inset 0 3px 8px rgba(0,0,0,.5);
+    }
+    .input-wrap:focus-within { border-color:#5b8cff; box-shadow: 0 0 0 3px rgba(91,140,255,.15), inset 0 3px 8px rgba(0,0,0,.5); }
+    .input-wrap input { width:100%; border:none; padding:.75rem 0; font-size:.9rem; background:transparent; outline:none; color:#eef4ff; font-family:inherit; }
+    .input-wrap input::placeholder { color:#475d82; font-size:.85rem; }
+    .input-wrap .input-icon { font-size:1rem; margin-right:.6rem; opacity:.55; user-select:none; color:#7c9ad4; }
+    .hint { font-size:.68rem; color:#6b7fa3; margin-top:.4rem; padding-left:.3rem; letter-spacing:.3px; }
+    .btn-primary {
+      width:100%; border:none; background:linear-gradient(135deg,#1e2e4a,#15223a); color:#e3ecff;
+      font-weight:600; font-size:.95rem; padding:.8rem; border-radius:40px; cursor:pointer; transition:.25s;
+      margin-top:.8rem; letter-spacing:1.2px; text-transform:uppercase;
+      box-shadow: 0 8px 20px -6px rgba(0,0,0,.6), inset 0 0 0 1px rgba(120,160,255,.15);
+      border: 1px solid rgba(120,160,255,.1); font-family:inherit;
+    }
+    .btn-primary:hover { background:linear-gradient(135deg,#253c5e,#1a2a44); transform:scale(1.02); }
+    .btn-primary:active { transform:scale(.97); }
+    .message-box {
+      margin:1.1rem 0 .6rem; padding:.65rem 1rem; border-radius:30px; font-size:.8rem; font-weight:500;
+      text-align:center; background:rgba(255,255,255,.03); color:#a0b5d9; min-height:2.8rem;
+      display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.05);
+    }
+    .message-box.info { background:rgba(91,140,255,.08); border-color:rgba(91,140,255,.25); color:#a8c2ff; }
+    .message-box.error { background:rgba(255,80,100,.07); border-color:rgba(255,100,120,.25); color:#ff9aa9; }
+    .message-box.success { background:rgba(60,200,120,.07); border-color:rgba(80,220,140,.25); color:#8ce0ac; }
+    .switch-line { text-align:center; margin-top:1rem; font-size:.78rem; color:#7f93b8; letter-spacing:.3px; }
+    .switch-line a { color:#a8c2ff; text-decoration:none; font-weight:600; margin-left:.3rem; border-bottom:1px dashed rgba(168,194,255,.4); }
+    .switch-line a:hover { color:#e3ecff; border-bottom-color:#e3ecff; }
+    @media (max-width:400px) { .card { padding:1.6rem 1.3rem 1.4rem; } h1 { font-size:1.6rem; } }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>空月 <span>·</span> 平台</h1>
+  <div class="subhead">注册账号</div>
+
+  <form id="regForm" autocomplete="off" onsubmit="return false;">
+    <div class="form-group">
+      <label for="regUser">用户名</label>
+      <div class="input-wrap">
+        <span class="input-icon">&#9993;</span>
+        <input type="text" id="regUser" placeholder="3-20 位字母 / 数字 / 下划线" maxlength="20" />
+      </div>
+      <div class="hint">登录时使用，一旦注册不可修改</div>
+    </div>
+
+    <div class="form-group">
+      <label for="regPass">密码</label>
+      <div class="input-wrap">
+        <span class="input-icon">&#128274;</span>
+        <input type="password" id="regPass" placeholder="至少 4 位" maxlength="32" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="regPass2">确认密码</label>
+      <div class="input-wrap">
+        <span class="input-icon">&#128274;</span>
+        <input type="password" id="regPass2" placeholder="请再次输入密码" maxlength="32" />
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary" id="regBtn">注册并登录</button>
+  </form>
+
+  <div id="messageBox" class="message-box info">注册即赠送 10,000 USDT</div>
+
+  <div class="switch-line">
+    已有账号？<a href="index.html">返回登录 →</a>
+  </div>
+</div>
+
+<script>
+  (function () {
+    "use strict";
+
+    var USERS_KEY = 'kongyue_users_v1';
+    var SESSION_KEY = 'kongyue_session_v1';
+
+    var INITIAL_PROJECTS = [
+      { id:'p1', name:'虚拟货币量化搬砖', industry:'量化搬砖', riskLevel:'mid',  rateMin:15.0, rateMax:32.0 },
+      { id:'p2', name:'跨境电商刷单套利', industry:'电商刷单', riskLevel:'low',  rateMin:8.0,  rateMax:18.0 },
+      { id:'p3', name:'海外博彩代理',     industry:'博彩代理', riskLevel:'high', rateMin:25.0, rateMax:60.0 },
+      { id:'p4', name:'DeFi 流动性挖矿',  industry:'DeFi挖矿', riskLevel:'mid',  rateMin:15.0, rateMax:32.0 },
+      { id:'p5', name:'AI 算力租赁',      industry:'算力租赁', riskLevel:'low',  rateMin:8.0,  rateMax:18.0 },
+      { id:'p6', name:'数字货币合约带单', industry:'合约带单', riskLevel:'high', rateMin:25.0, rateMax:60.0 },
+      { id:'p7', name:'游戏点卡代充',     industry:'点卡代充', riskLevel:'mid',  rateMin:15.0, rateMax:32.0 },
+      { id:'p8', name:'海外广告联盟',     industry:'广告联盟', riskLevel:'low',  rateMin:8.0,  rateMax:18.0 }
+    ];
+
+    var RISK_CONFIG = { low: { label: '低风险' }, mid: { label: '中风险' }, high: { label: '高风险' } };
+
+    function loadUsers() {
+      try { var raw = localStorage.getItem(USERS_KEY); return raw ? JSON.parse(raw) : {}; }
+      catch (e) { return {}; }
+    }
+    function saveUsers(u) {
+      try { localStorage.setItem(USERS_KEY, JSON.stringify(u)); } catch (e) {}
+    }
+    function setSession(u) {
+      try { localStorage.setItem(SESSION_KEY, u); } catch (e) {}
+    }
+
+    function buildUser(username, password) {
+      var projects = INITIAL_PROJECTS.map(function (p) {
+        var cfg = RISK_CONFIG[p.riskLevel];
+        return {
+          id: p.id, name: p.name, industry: p.industry,
+          riskLevel: p.riskLevel, riskLabel: cfg.label,
+          rateMin: p.rateMin, rateMax: p.rateMax,
+          currentRate: Math.round((p.rateMin + Math.random() * (p.rateMax - p.rateMin)) * 10) / 10,
+          invested: 0, profit: 0, settleCount: 0, lastUpdate: Date.now()
+        };
+      });
+      return {
+        username: username,
+        password: password,
+        nickname: username,
+        avatar: 'img/avatar.png',
+        balance: 10000,
+        createdAt: Date.now(),
+        projects: projects,
+        records: [],
+        stats: { totalProfit: 0, totalLoss: 0, settleCount: 0 },
+        lastSettleAt: Date.now(),
+        lastRiskAdjustAt: Date.now(),
+        version: 1
+      };
+    }
+
+    var regForm = document.getElementById('regForm');
+    var regUser = document.getElementById('regUser');
+    var regPass = document.getElementById('regPass');
+    var regPass2 = document.getElementById('regPass2');
+    var messageBox = document.getElementById('messageBox');
+
+    function setMessage(text, type) {
+      messageBox.textContent = text;
+      messageBox.className = 'message-box ' + (type || 'info');
+    }
+
+    regForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var u = regUser.value.trim();
+      var p = regPass.value;
+      var p2 = regPass2.value;
+
+      if (!u) { setMessage('请输入用户名', 'error'); regUser.focus(); return; }
+      if (!/^[A-Za-z0-9_]{3,20}$/.test(u)) {
+        setMessage('用户名需 3-20 位字母/数字/下划线', 'error'); regUser.focus(); return;
+      }
+      if (!p || p.length < 4) { setMessage('密码至少 4 位', 'error'); regPass.focus(); return; }
+      if (p !== p2) { setMessage('两次输入的密码不一致', 'error'); regPass2.focus(); return; }
+
+      var users = loadUsers();
+      if (users[u]) { setMessage('该用户名已被注册', 'error'); regUser.focus(); return; }
+
+      users[u] = buildUser(u, p);
+      saveUsers(users);
+      setSession(u);
+      setMessage('注册成功，正在进入…', 'success');
+      setTimeout(function () { window.location.href = 'home.html'; }, 500);
+    });
+  })();
+</script>
+</body>
+</html>

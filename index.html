@@ -1,0 +1,318 @@
+<!-- ============================================================
+     文件：index.html（登录）
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>空月平台 · 登录</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',sans-serif; }
+    body { background: linear-gradient(145deg,#0b0f1a 0%,#141b2b 100%); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1.2rem; }
+    .card {
+      background: rgba(18,25,40,.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-radius: 32px; box-shadow: 0 20px 50px -15px rgba(0,0,0,.8), inset 0 1px 2px rgba(255,255,255,.06);
+      width: 100%; max-width: 360px; padding: 2rem 1.8rem 1.8rem;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    h1 { font-size:1.9rem; font-weight:600; letter-spacing:-.02em; color:#eef4ff; margin-bottom:.15rem; text-shadow:0 4px 20px rgba(80,140,255,.2); }
+    h1 span { font-size:1.3rem; opacity:.6; font-weight:300; }
+    .subhead { color:#8fa3c9; font-size:.85rem; margin-bottom:1.6rem; border-left:2px solid #5b8cff; padding-left:.7rem; letter-spacing:.3px; text-transform:uppercase; }
+    .form-group { margin-bottom:1.1rem; }
+    label { display:block; font-size:.7rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#9db1d4; margin-bottom:.35rem; }
+    .input-wrap {
+      display:flex; align-items:center; background:rgba(8,14,24,.7); border-radius:30px; padding:0 1.1rem;
+      border:1px solid #253248; transition:.25s; box-shadow: inset 0 3px 8px rgba(0,0,0,.5);
+    }
+    .input-wrap:focus-within { border-color:#5b8cff; box-shadow: 0 0 0 3px rgba(91,140,255,.15), inset 0 3px 8px rgba(0,0,0,.5); }
+    .input-wrap input { width:100%; border:none; padding:.75rem 0; font-size:.9rem; background:transparent; outline:none; color:#eef4ff; font-family:inherit; }
+    .input-wrap input::placeholder { color:#475d82; font-size:.85rem; }
+    .input-wrap .input-icon { font-size:1rem; margin-right:.6rem; opacity:.55; user-select:none; color:#7c9ad4; }
+    .btn-primary {
+      width:100%; border:none; background:linear-gradient(135deg,#1e2e4a,#15223a); color:#e3ecff;
+      font-weight:600; font-size:.95rem; padding:.8rem; border-radius:40px; cursor:pointer; transition:.25s;
+      margin-top:.6rem; letter-spacing:1.2px; text-transform:uppercase;
+      box-shadow: 0 8px 20px -6px rgba(0,0,0,.6), inset 0 0 0 1px rgba(120,160,255,.15);
+      border: 1px solid rgba(120,160,255,.1); font-family:inherit;
+    }
+    .btn-primary:hover { background:linear-gradient(135deg,#253c5e,#1a2a44); transform:scale(1.02); }
+    .btn-primary:active { transform:scale(.97); }
+    .message-box {
+      margin:1.1rem 0 .6rem; padding:.65rem 1rem; border-radius:30px; font-size:.8rem; font-weight:500;
+      text-align:center; background:rgba(255,255,255,.03); color:#a0b5d9; min-height:2.8rem;
+      display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.05);
+    }
+    .message-box.info { background:rgba(91,140,255,.08); border-color:rgba(91,140,255,.25); color:#a8c2ff; }
+    .message-box.error { background:rgba(255,80,100,.07); border-color:rgba(255,100,120,.25); color:#ff9aa9; }
+    .message-box.success { background:rgba(60,200,120,.07); border-color:rgba(80,220,140,.25); color:#8ce0ac; }
+    .hidden { display:none !important; }
+    .switch-line { text-align:center; margin-top:1rem; font-size:.78rem; color:#7f93b8; letter-spacing:.3px; }
+    .switch-line a { color:#a8c2ff; text-decoration:none; font-weight:600; margin-left:.3rem; border-bottom:1px dashed rgba(168,194,255,.4); transition:.2s; }
+    .switch-line a:hover { color:#e3ecff; border-bottom-color:#e3ecff; }
+    .existing-hint {
+      margin-bottom:1rem; padding:.55rem .9rem; border-radius:14px;
+      background:rgba(91,140,255,.08); border:1px solid rgba(91,140,255,.22);
+      color:#a8c2ff; font-size:.75rem; letter-spacing:.3px; line-height:1.6;
+    }
+    .existing-hint .u { color:#e3ecff; font-weight:600; }
+
+    .captcha-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+      display:flex; align-items:center; justify-content:center; z-index:999;
+    }
+    .captcha-modal {
+      background:rgba(18,26,42,.95); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+      border-radius:28px; padding:1.8rem 1.6rem 1.5rem; max-width:330px; width:92%;
+      box-shadow: 0 40px 80px -20px rgba(0,0,0,.9), 0 0 0 1px rgba(120,160,255,.1);
+      border:1px solid rgba(255,255,255,.03); position:relative;
+    }
+    .captcha-modal h2 { font-size:1.2rem; color:#eef4ff; margin-bottom:.2rem; font-weight:600; }
+    .captcha-modal .captcha-sub { color:#7f93b8; font-size:.8rem; margin-bottom:1.3rem; }
+    .captcha-track {
+      position:relative; width:100%; height:46px; background:rgba(8,14,24,.9); border-radius:40px; overflow:hidden;
+      border:1px solid #253248; user-select:none; touch-action:none; cursor:grab; box-shadow: inset 0 4px 8px rgba(0,0,0,.6);
+    }
+    .captcha-track:active { cursor:grabbing; }
+    .captcha-bg {
+      position:absolute; left:0; top:0; height:100%; width:0%;
+      background:linear-gradient(90deg,#3b66b0,#5b8cff); border-radius:40px; transition:width .05s linear; pointer-events:none;
+    }
+    .captcha-thumb {
+      position:absolute; left:0; top:50%; transform:translateY(-50%); width:38px; height:38px;
+      background:linear-gradient(145deg,#1e2e4a,#15223a); border-radius:50%;
+      box-shadow: 0 6px 14px rgba(0,0,0,.7), 0 0 0 1px rgba(120,160,255,.3);
+      display:flex; align-items:center; justify-content:center; transition:left .05s linear; pointer-events:none;
+      border:1px solid rgba(91,140,255,.4);
+    }
+    .captcha-thumb svg { width:18px; height:18px; fill:none; stroke:#b8d0ff; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+    .captcha-status { text-align:center; margin-top:.9rem; font-size:.75rem; color:#7f93b8; min-height:1.4rem; }
+    .captcha-status.success { color:#6ee7a0; }
+    .captcha-status.error { color:#ff8a9a; }
+    .captcha-actions { display:flex; gap:.6rem; margin-top:1.1rem; }
+    .captcha-actions button {
+      flex:1; border:none; padding:.65rem; border-radius:30px; font-weight:600; font-size:.8rem;
+      cursor:pointer; transition:.2s; letter-spacing:.6px; text-transform:uppercase; font-family:inherit;
+    }
+    .btn-captcha-confirm {
+      background:linear-gradient(135deg,#2a4270,#1b2d4e); color:#e3ecff;
+      box-shadow: 0 6px 14px -4px rgba(0,0,0,.6), inset 0 0 0 1px rgba(120,160,255,.15);
+    }
+    .btn-captcha-confirm:hover:not(:disabled) { background:linear-gradient(135deg,#345288,#223a5e); transform:scale(1.02); }
+    .btn-captcha-confirm:disabled { opacity:.3; cursor:not-allowed; filter:grayscale(.6); }
+    .btn-captcha-cancel { background:rgba(255,255,255,.04); color:#8fa3c9; border:1px solid rgba(255,255,255,.06); }
+    .btn-captcha-cancel:hover { background:rgba(255,255,255,.08); color:#b8c9e8; }
+    .captcha-close-icon {
+      position:absolute; top:.9rem; right:1rem; background:none; border:none; font-size:1.4rem;
+      color:#5d7298; cursor:pointer; padding:.1rem .4rem; border-radius:16px; line-height:1;
+    }
+    .captcha-close-icon:hover { background:rgba(255,255,255,.05); color:#b8c9e8; }
+    @media (max-width:400px) { .card { padding:1.6rem 1.3rem 1.4rem; } h1 { font-size:1.6rem; } }
+  </style>
+</head>
+<body>
+
+<div class="card" role="main">
+  <h1>空月 <span>·</span> 平台</h1>
+  <div class="subhead">登录账号</div>
+
+  <div id="existingHint" class="existing-hint hidden">
+    已登录为 <span class="u" id="existingUser">—</span>，可继续或切换账号。
+  </div>
+
+  <form id="loginForm" autocomplete="off" onsubmit="return false;">
+    <div class="form-group">
+      <label for="loginUser">用户名</label>
+      <div class="input-wrap">
+        <span class="input-icon">&#9993;</span>
+        <input type="text" id="loginUser" placeholder="请输入用户名" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="loginPass">密码</label>
+      <div class="input-wrap">
+        <span class="input-icon">&#128274;</span>
+        <input type="password" id="loginPass" placeholder="••••••••" />
+      </div>
+    </div>
+    <button type="submit" class="btn-primary" id="loginBtn">登录</button>
+  </form>
+
+  <div id="messageBox" class="message-box info">请输入账号密码后登录</div>
+
+  <div class="switch-line">
+    还没有账号？<a href="register.html">立即注册 →</a>
+  </div>
+</div>
+
+<div id="captchaOverlay" class="captcha-overlay hidden">
+  <div class="captcha-modal">
+    <button type="button" id="captchaCloseBtn" class="captcha-close-icon">&times;</button>
+    <h2>安全验证</h2>
+    <div class="captcha-sub">请拖动滑块完成验证</div>
+    <div class="captcha-track" id="captchaTrack">
+      <div class="captcha-bg" id="captchaBg"></div>
+      <div class="captcha-thumb" id="captchaThumb">
+        <svg viewBox="0 0 24 24"><path d="M5 12l4 4L19 6" /></svg>
+      </div>
+    </div>
+    <div class="captcha-status" id="captchaStatus">拖动滑块到右侧</div>
+    <div class="captcha-actions">
+      <button type="button" class="btn-captcha-cancel" id="captchaCancelBtn">取消</button>
+      <button type="button" class="btn-captcha-confirm" id="captchaConfirmBtn" disabled>确认</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    "use strict";
+
+    var USERS_KEY = 'kongyue_users_v1';
+    var SESSION_KEY = 'kongyue_session_v1';
+
+    function loadUsers() {
+      try { var raw = localStorage.getItem(USERS_KEY); return raw ? JSON.parse(raw) : {}; }
+      catch (e) { return {}; }
+    }
+    function getSession() {
+      try { return localStorage.getItem(SESSION_KEY) || null; } catch (e) { return null; }
+    }
+    function setSession(u) {
+      try { localStorage.setItem(SESSION_KEY, u); } catch (e) {}
+    }
+
+    var loginForm = document.getElementById('loginForm');
+    var loginUser = document.getElementById('loginUser');
+    var loginPass = document.getElementById('loginPass');
+    var messageBox = document.getElementById('messageBox');
+    var existingHint = document.getElementById('existingHint');
+    var existingUser = document.getElementById('existingUser');
+
+    var captchaOverlay = document.getElementById('captchaOverlay');
+    var captchaTrack = document.getElementById('captchaTrack');
+    var captchaBg = document.getElementById('captchaBg');
+    var captchaThumb = document.getElementById('captchaThumb');
+    var captchaStatus = document.getElementById('captchaStatus');
+    var captchaConfirmBtn = document.getElementById('captchaConfirmBtn');
+    var captchaCancelBtn = document.getElementById('captchaCancelBtn');
+    var captchaCloseBtn = document.getElementById('captchaCloseBtn');
+
+    function setMessage(text, type) {
+      messageBox.textContent = text;
+      messageBox.className = 'message-box ' + (type || 'info');
+    }
+
+    var sess = getSession();
+    if (sess) {
+      var users = loadUsers();
+      if (users[sess]) {
+        existingUser.textContent = users[sess].nickname || sess;
+        existingHint.classList.remove('hidden');
+      }
+    }
+
+    var captchaResolved = false, isDragging = false, currentX = 0;
+    var TRACK_PADDING = 5, THUMB_W = 38;
+
+    function resetCaptcha() {
+      captchaResolved = false; isDragging = false; currentX = 0;
+      captchaBg.style.width = '0%';
+      captchaThumb.style.left = '0px';
+      captchaStatus.textContent = '拖动滑块到右侧';
+      captchaStatus.className = 'captcha-status';
+      captchaConfirmBtn.disabled = true;
+    }
+
+    function onStart(e) {
+      if (captchaResolved) return;
+      e.preventDefault(); isDragging = true;
+      captchaTrack.style.cursor = 'grabbing';
+    }
+    function onMove(e) {
+      if (!isDragging || captchaResolved) return;
+      e.preventDefault();
+      var clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+      var rect = captchaTrack.getBoundingClientRect();
+      var maxX = rect.width - THUMB_W - TRACK_PADDING;
+      var x = clientX - rect.left - THUMB_W / 2;
+      x = Math.max(TRACK_PADDING, Math.min(x, maxX));
+      var percent = (x - TRACK_PADDING) / (maxX - TRACK_PADDING) * 100;
+      captchaBg.style.width = percent + '%';
+      captchaThumb.style.left = x + 'px';
+      currentX = x;
+    }
+    function onEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      captchaTrack.style.cursor = 'grab';
+      var rect = captchaTrack.getBoundingClientRect();
+      var maxX = rect.width - THUMB_W - TRACK_PADDING;
+      if (currentX >= maxX * 0.92) {
+        captchaResolved = true;
+        captchaBg.style.width = '100%';
+        captchaThumb.style.left = maxX + 'px';
+        captchaStatus.textContent = '验证通过';
+        captchaStatus.className = 'captcha-status success';
+        captchaConfirmBtn.disabled = false;
+      } else {
+        if (currentX > TRACK_PADDING + 8) {
+          captchaStatus.textContent = '请将滑块拖到最右侧';
+          captchaStatus.className = 'captcha-status error';
+          setTimeout(resetCaptcha, 600);
+        } else resetCaptcha();
+        captchaBg.style.width = '0%';
+        captchaThumb.style.left = '0px';
+        currentX = 0;
+      }
+    }
+
+    captchaTrack.addEventListener('mousedown', onStart);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onEnd);
+    captchaTrack.addEventListener('touchstart', onStart, { passive: false });
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onEnd, { passive: false });
+
+    captchaCancelBtn.addEventListener('click', function () { captchaOverlay.classList.add('hidden'); resetCaptcha(); });
+    captchaCloseBtn.addEventListener('click', function () { captchaOverlay.classList.add('hidden'); resetCaptcha(); });
+    captchaOverlay.addEventListener('click', function (e) { if (e.target === this) { captchaOverlay.classList.add('hidden'); resetCaptcha(); } });
+
+    var pendingUser = null;
+
+    loginForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var u = loginUser.value.trim();
+      var p = loginPass.value.trim();
+
+      if (!u) { setMessage('请输入用户名', 'error'); loginUser.focus(); return; }
+      if (!p) { setMessage('请输入密码', 'error'); loginPass.focus(); return; }
+
+      var users = loadUsers();
+      var found = users[u];
+      if (!found) { setMessage('账号不存在，请先注册', 'error'); loginUser.focus(); return; }
+      if (found.password !== p) { setMessage('密码错误，请重试', 'error'); loginPass.focus(); return; }
+
+      pendingUser = u;
+      setMessage('正在进行安全验证…', 'info');
+      captchaOverlay.classList.remove('hidden'); resetCaptcha();
+    });
+
+    captchaConfirmBtn.addEventListener('click', function () {
+      if (!captchaResolved || !pendingUser) return;
+      captchaOverlay.classList.add('hidden'); resetCaptcha();
+      setSession(pendingUser);
+      setMessage('登录成功，正在进入…', 'success');
+      setTimeout(function () { window.location.href = 'home.html'; }, 450);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !captchaOverlay.classList.contains('hidden')) {
+        captchaOverlay.classList.add('hidden'); resetCaptcha();
+        setMessage('已取消验证', 'info');
+      }
+    });
+  })();
+</script>
+</body>
+</html>

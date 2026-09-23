@@ -1,0 +1,608 @@
+<!-- ============================================================
+     文件：home.html（主页）
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>空月平台 · 主页</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',sans-serif; }
+    body { background: linear-gradient(145deg,#0b0f1a 0%,#141b2b 100%); min-height:100vh; color:#eef4ff; padding-bottom:3rem; }
+    .navbar {
+      position: sticky; top:0; z-index:100;
+      background: rgba(18,25,40,.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,.06); padding: .85rem 1.1rem;
+      display:flex; align-items:center; justify-content:space-between; gap:1rem;
+      box-shadow: 0 8px 24px -12px rgba(0,0,0,.8);
+    }
+    .nav-brand { font-size:1.05rem; font-weight:600; letter-spacing:.02em; color:#eef4ff; text-shadow:0 2px 12px rgba(80,140,255,.25); white-space:nowrap; }
+    .nav-brand span { color:#5b8cff; font-weight:300; }
+    .nav-links { display:flex; gap:.25rem; }
+    .nav-link {
+      text-decoration:none; color:#8fa3c9; font-size:.82rem; font-weight:500;
+      padding:.45rem .9rem; border-radius:20px; transition:.22s; letter-spacing:.3px; white-space:nowrap;
+    }
+    .nav-link:hover { color:#c8d6f0; background:rgba(255,255,255,.05); }
+    .nav-link.active { color:#e3ecff; background:linear-gradient(135deg,#2a4270,#1b2d4e);
+      box-shadow: 0 4px 12px -4px rgba(0,0,0,.7), inset 0 0 0 1px rgba(120,160,255,.2); }
+
+    .container { max-width:560px; margin:0 auto; padding:1.2rem 1.1rem 0; }
+
+    .balance-bar {
+      background: linear-gradient(135deg, rgba(42,66,112,.5), rgba(27,45,78,.5));
+      border:1px solid rgba(120,160,255,.18);
+      border-radius:22px; padding:1rem 1.2rem;
+      display:flex; align-items:center; justify-content:space-between; gap:1rem;
+      margin-bottom:1.2rem;
+      box-shadow: 0 12px 30px -16px rgba(0,0,0,.9), inset 0 1px 2px rgba(255,255,255,.05);
+    }
+    .balance-info { flex:1; min-width:0; }
+    .balance-label { font-size:.65rem; color:#7f93b8; text-transform:uppercase; letter-spacing:1.2px; margin-bottom:.25rem; }
+    .balance-value { font-size:1.5rem; font-weight:700; color:#8ce0ac; letter-spacing:.3px; text-shadow:0 0 18px rgba(60,200,120,.3); }
+    .balance-value.loss { color:#ff8a9a; text-shadow:0 0 18px rgba(255,80,100,.3); }
+    .balance-delta {
+      font-size:.72rem; font-weight:600; padding:.35rem .7rem; border-radius:12px;
+      background:rgba(60,200,120,.1); color:#8ce0ac; border:1px solid rgba(80,220,140,.2); white-space:nowrap;
+    }
+    .balance-delta.loss { background:rgba(255,80,100,.1); color:#ff9aa9; border-color:rgba(255,100,120,.25); }
+    .balance-delta.hide { opacity:0; }
+
+    .page-title { font-size:1.35rem; font-weight:600; letter-spacing:-.01em; margin-bottom:.25rem; }
+    .page-sub { font-size:.75rem; color:#7f93b8; margin-bottom:1rem; letter-spacing:.3px; display:flex; align-items:center; justify-content:space-between; }
+    .settle-dot { font-size:.68rem; color:#6ee7a0; display:flex; align-items:center; gap:.35rem; }
+    .settle-dot::before { content:''; width:6px; height:6px; border-radius:50%; background:#6ee7a0; box-shadow:0 0 8px #6ee7a0; animation:pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    .list { display:flex; flex-direction:column; gap:.75rem; }
+    .card-item {
+      background: rgba(18,25,40,.78);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-radius:22px; padding:1rem 1.15rem;
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow: 0 12px 30px -18px rgba(0,0,0,.9), inset 0 1px 2px rgba(255,255,255,.04);
+      transition: transform .18s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    .card-item:hover { transform: translateY(-2px); border-color: rgba(120,160,255,.2);
+      box-shadow: 0 18px 40px -18px rgba(0,0,0,.95), 0 0 0 1px rgba(120,160,255,.08); }
+    .card-item.invested { border-color: rgba(80,220,140,.28);
+      box-shadow: 0 12px 30px -18px rgba(0,0,0,.9), 0 0 0 1px rgba(80,220,140,.15); }
+
+    .item-row { display:flex; align-items:flex-start; justify-content:space-between; gap:.9rem; }
+    .item-main { flex:1; min-width:0; }
+    .item-name { font-size:.98rem; font-weight:600; color:#eef4ff; letter-spacing:.2px; }
+    .item-tags { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.45rem; }
+    .tag { display:inline-block; font-size:.62rem; font-weight:600; padding:.18rem .6rem; border-radius:10px; letter-spacing:.4px; }
+    .tag-industry { background:rgba(91,140,255,.1); color:#a8c2ff; border:1px solid rgba(91,140,255,.22); }
+    .risk-low  { background:rgba(60,200,120,.1);  color:#8ce0ac; border:1px solid rgba(80,220,140,.25); }
+    .risk-mid  { background:rgba(255,190,60,.1);  color:#ffd98a; border:1px solid rgba(255,190,60,.25); }
+    .risk-high { background:rgba(255,80,100,.09); color:#ff9aa9; border:1px solid rgba(255,100,120,.25); }
+
+    .item-rate { text-align:right; flex-shrink:0; }
+    .rate-current { font-size:1.15rem; font-weight:700; letter-spacing:.2px; }
+    .rate-current.pos { color:#6ee7a0; text-shadow:0 0 12px rgba(60,200,120,.3); }
+    .rate-current.neg { color:#ff8a9a; text-shadow:0 0 12px rgba(255,80,100,.25); }
+    .rate-range { font-size:.65rem; color:#7f93b8; margin-top:.2rem; letter-spacing:.3px; }
+
+    .item-actions { display:flex; gap:.5rem; margin-top:.85rem; }
+    .btn-sm {
+      flex:1; border:none; padding:.55rem .8rem; border-radius:14px; font-weight:600; font-size:.78rem;
+      cursor:pointer; transition:.2s; letter-spacing:.4px; font-family:inherit;
+    }
+    .btn-invest {
+      background:linear-gradient(135deg,#2a4270,#1b2d4e); color:#e3ecff;
+      box-shadow: 0 4px 12px -4px rgba(0,0,0,.7), inset 0 0 0 1px rgba(120,160,255,.18);
+    }
+    .btn-invest:hover:not(:disabled) { background:linear-gradient(135deg,#345288,#223a5e); transform:scale(1.02); }
+    .btn-invest:disabled { opacity:.35; cursor:not-allowed; filter:grayscale(.5); }
+    .btn-withdraw { background:rgba(255,255,255,.05); color:#c8d6f0; border:1px solid rgba(255,255,255,.08); }
+    .btn-withdraw:hover { background:rgba(255,255,255,.09); }
+
+    .invest-info {
+      margin-top:.7rem; padding-top:.7rem; border-top:1px dashed rgba(255,255,255,.08);
+      display:flex; justify-content:space-between; gap:.8rem; font-size:.72rem;
+    }
+    .invest-info .k { color:#7f93b8; }
+    .invest-info .v { color:#eef4ff; font-weight:600; }
+    .invest-info .v.pos { color:#6ee7a0; }
+    .invest-info .v.neg { color:#ff8a9a; }
+
+    .loading { text-align:center; padding:2.5rem 1rem; color:#7f93b8; font-size:.85rem; }
+    .hidden { display:none !important; }
+
+    .float-tip {
+      position:fixed; left:50%; top:80px; transform:translate(-50%,-10px);
+      background:rgba(18,26,42,.96); color:#8ce0ac;
+      border:1px solid rgba(80,220,140,.3);
+      padding:.6rem 1.2rem; border-radius:30px; font-size:.78rem; font-weight:600;
+      opacity:0; pointer-events:none; transition:.3s; z-index:500;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 12px 28px -10px rgba(0,0,0,.9); white-space:nowrap;
+    }
+    .float-tip.show { opacity:1; transform:translate(-50%,0); }
+    .float-tip.loss { color:#ff9aa9; border-color:rgba(255,100,120,.3); }
+
+    /* ========= 自定义弹窗通用 ========= */
+    .modal-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      display:flex; align-items:center; justify-content:center; z-index:900;
+      animation:fadeIn .18s ease; padding:1.2rem;
+    }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .modal {
+      background:rgba(18,26,42,.96); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+      border-radius:24px; padding:1.5rem 1.4rem 1.3rem; max-width:340px; width:100%;
+      box-shadow: 0 40px 80px -20px rgba(0,0,0,.9), 0 0 0 1px rgba(120,160,255,.1);
+      border:1px solid rgba(255,255,255,.05);
+      animation: slideUp .25s cubic-bezier(.16,1,.3,1);
+    }
+    @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .modal h3 { font-size:1.05rem; color:#eef4ff; margin-bottom:.5rem; font-weight:600; letter-spacing:-.01em; }
+    .modal .modal-desc { font-size:.8rem; color:#8fa3c9; line-height:1.6; margin-bottom:1.1rem; letter-spacing:.2px; }
+    .modal-input {
+      width:100%; background:rgba(8,14,24,.7); border:1px solid #253248;
+      border-radius:30px; padding:.75rem 1.1rem; color:#eef4ff; font-size:.9rem;
+      outline:none; transition:.25s; font-family:inherit; margin-bottom:.6rem;
+      box-shadow: inset 0 3px 8px rgba(0,0,0,.5);
+    }
+    .modal-input:focus { border-color:#5b8cff; box-shadow: 0 0 0 3px rgba(91,140,255,.15), inset 0 3px 8px rgba(0,0,0,.5); }
+    .modal-input::placeholder { color:#475d82; }
+    .modal-hint { font-size:.68rem; color:#6b7fa3; margin-bottom:1rem; letter-spacing:.3px; padding-left:.2rem; }
+    .modal-hint.warn { color:#ff9aa9; }
+    .modal-actions { display:flex; gap:.6rem; margin-top:.8rem; }
+    .modal-actions button {
+      flex:1; border:none; padding:.7rem; border-radius:30px; font-weight:600; font-size:.85rem;
+      cursor:pointer; transition:.2s; letter-spacing:.6px; font-family:inherit;
+    }
+    .modal-btn-primary {
+      background:linear-gradient(135deg,#2a4270,#1b2d4e); color:#e3ecff;
+      box-shadow: 0 6px 14px -4px rgba(0,0,0,.6), inset 0 0 0 1px rgba(120,160,255,.15);
+    }
+    .modal-btn-primary:hover { background:linear-gradient(135deg,#345288,#223a5e); transform:scale(1.02); }
+    .modal-btn-ghost { background:rgba(255,255,255,.04); color:#8fa3c9; border:1px solid rgba(255,255,255,.07); }
+    .modal-btn-ghost:hover { background:rgba(255,255,255,.08); color:#b8c9e8; }
+    .modal-btn-danger {
+      background:rgba(255,80,100,.1); color:#ff9aa9; border:1px solid rgba(255,100,120,.28);
+    }
+    .modal-btn-danger:hover { background:rgba(255,80,100,.16); }
+
+    @media (max-width:400px) {
+      .nav-link { padding:.4rem .7rem; font-size:.76rem; }
+      .page-title { font-size:1.2rem; }
+      .balance-value { font-size:1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-brand">空月 <span>·</span> 平台</div>
+  <div class="nav-links">
+    <a href="home.html" class="nav-link active">主页</a>
+    <a href="records.html" class="nav-link">记录</a>
+    <a href="profile.html" class="nav-link">个人</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="balance-bar">
+    <div class="balance-info">
+      <div class="balance-label">账户余额</div>
+      <div class="balance-value" id="balanceText">0.00</div>
+    </div>
+    <div class="balance-delta hide" id="balanceDelta">+0.00</div>
+  </div>
+
+  <div class="page-title">在投项目</div>
+  <div class="page-sub">
+    <span>实时结算 · 每 5 秒一次</span>
+    <span class="settle-dot">运行中</span>
+  </div>
+
+  <div id="list" class="list">
+    <div class="loading">正在加载…</div>
+  </div>
+</div>
+
+<div id="floatTip" class="float-tip">已结算</div>
+
+<!-- 自定义弹窗挂载点 -->
+<div id="modalRoot"></div>
+
+<script>
+  (function () {
+    "use strict";
+
+    var USERS_KEY = 'kongyue_users_v1';
+    var SESSION_KEY = 'kongyue_session_v1';
+
+    var RISK_CONFIG = {
+      low:  { label: '低风险', rateMin: 8.0,  rateMax: 18.0, lossChance: 0.05, lossFactor: 0.30 },
+      mid:  { label: '中风险', rateMin: 15.0, rateMax: 32.0, lossChance: 0.15, lossFactor: 0.60 },
+      high: { label: '高风险', rateMin: 25.0, rateMax: 60.0, lossChance: 0.30, lossFactor: 1.00 }
+    };
+
+    function loadUsers() {
+      try { var raw = localStorage.getItem(USERS_KEY); return raw ? JSON.parse(raw) : {}; }
+      catch (e) { return {}; }
+    }
+    function saveUsers(u) {
+      try { localStorage.setItem(USERS_KEY, JSON.stringify(u)); } catch (e) {}
+    }
+    function getSession() {
+      try { return localStorage.getItem(SESSION_KEY) || null; } catch (e) { return null; }
+    }
+    function getCurrentUser() {
+      var s = getSession(); if (!s) return null;
+      var users = loadUsers(); return users[s] || null;
+    }
+    function saveCurrentUser(user) {
+      var users = loadUsers();
+      users[user.username] = user;
+      saveUsers(users);
+    }
+
+    var currentUser = getCurrentUser();
+    if (!currentUser) { window.location.href = 'index.html'; return; }
+
+    function nowStr() {
+      var d = new Date();
+      var p = function (n) { return String(n).padStart(2, '0'); };
+      return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    }
+
+    var balanceText = document.getElementById('balanceText');
+    var balanceDelta = document.getElementById('balanceDelta');
+    var listEl = document.getElementById('list');
+    var floatTip = document.getElementById('floatTip');
+    var modalRoot = document.getElementById('modalRoot');
+
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+    function fmt(n, d) { return Number(n).toFixed(d === undefined ? 2 : d); }
+
+    /* ========= 自定义弹窗 API ========= */
+    function showAlert(opts) {
+      // opts: { title, desc, type, confirmText, onConfirm }
+      var ov = document.createElement('div');
+      ov.className = 'modal-overlay';
+      var btnClass = opts.type === 'danger' ? 'modal-btn-danger' : 'modal-btn-primary';
+      ov.innerHTML =
+        '<div class="modal">' +
+          '<h3>' + esc(opts.title || '提示') + '</h3>' +
+          (opts.desc ? '<div class="modal-desc">' + opts.desc + '</div>' : '') +
+          '<div class="modal-actions">' +
+            '<button class="' + btnClass + '" data-act="ok">' + esc(opts.confirmText || '确定') + '</button>' +
+          '</div>' +
+        '</div>';
+      modalRoot.appendChild(ov);
+      var okBtn = ov.querySelector('[data-act="ok"]');
+      function close() {
+        ov.remove();
+        if (opts.onConfirm) opts.onConfirm();
+      }
+      okBtn.addEventListener('click', close);
+      ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+      setTimeout(function () { okBtn.focus(); }, 50);
+    }
+
+    function showConfirm(opts) {
+      // opts: { title, desc, type, confirmText, cancelText, onConfirm, onCancel }
+      var ov = document.createElement('div');
+      ov.className = 'modal-overlay';
+      var btnClass = opts.type === 'danger' ? 'modal-btn-danger' : 'modal-btn-primary';
+      ov.innerHTML =
+        '<div class="modal">' +
+          '<h3>' + esc(opts.title || '确认操作') + '</h3>' +
+          (opts.desc ? '<div class="modal-desc">' + opts.desc + '</div>' : '') +
+          '<div class="modal-actions">' +
+            '<button class="modal-btn-ghost" data-act="cancel">' + esc(opts.cancelText || '取消') + '</button>' +
+            '<button class="' + btnClass + '" data-act="ok">' + esc(opts.confirmText || '确定') + '</button>' +
+          '</div>' +
+        '</div>';
+      modalRoot.appendChild(ov);
+      function close() { ov.remove(); }
+      ov.querySelector('[data-act="cancel"]').addEventListener('click', function () {
+        close();
+        if (opts.onCancel) opts.onCancel();
+      });
+      ov.querySelector('[data-act="ok"]').addEventListener('click', function () {
+        close();
+        if (opts.onConfirm) opts.onConfirm();
+      });
+      ov.addEventListener('click', function (e) { if (e.target === ov) { close(); if (opts.onCancel) opts.onCancel(); } });
+    }
+
+    function showPrompt(opts) {
+      // opts: { title, desc, placeholder, defaultValue, hint, type, confirmText, onConfirm, onCancel }
+      var ov = document.createElement('div');
+      ov.className = 'modal-overlay';
+      var btnClass = opts.type === 'danger' ? 'modal-btn-danger' : 'modal-btn-primary';
+      ov.innerHTML =
+        '<div class="modal">' +
+          '<h3>' + esc(opts.title || '请输入') + '</h3>' +
+          (opts.desc ? '<div class="modal-desc">' + opts.desc + '</div>' : '') +
+          '<input class="modal-input" type="' + (opts.inputType || 'text') + '" placeholder="' + esc(opts.placeholder || '') + '" value="' + esc(opts.defaultValue || '') + '" />' +
+          (opts.hint ? '<div class="modal-hint" data-hint>' + opts.hint + '</div>' : '<div class="modal-hint" data-hint></div>') +
+          '<div class="modal-actions">' +
+            '<button class="modal-btn-ghost" data-act="cancel">取消</button>' +
+            '<button class="' + btnClass + '" data-act="ok">' + esc(opts.confirmText || '确定') + '</button>' +
+          '</div>' +
+        '</div>';
+      modalRoot.appendChild(ov);
+      var input = ov.querySelector('.modal-input');
+      var hintEl = ov.querySelector('[data-hint]');
+      function close() { ov.remove(); }
+      ov.querySelector('[data-act="cancel"]').addEventListener('click', function () {
+        close();
+        if (opts.onCancel) opts.onCancel();
+      });
+      ov.querySelector('[data-act="ok"]').addEventListener('click', function () {
+        var val = input.value;
+        if (opts.validate) {
+          var err = opts.validate(val);
+          if (err) { hintEl.textContent = err; hintEl.classList.add('warn'); input.focus(); return; }
+        }
+        close();
+        if (opts.onConfirm) opts.onConfirm(val);
+      });
+      ov.addEventListener('click', function (e) { if (e.target === ov) { close(); if (opts.onCancel) opts.onCancel(); } });
+      setTimeout(function () { input.focus(); input.select(); }, 50);
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { ov.querySelector('[data-act="ok"]').click(); }
+      });
+    }
+
+    /* ========= 结算逻辑 ========= */
+    function settleOnce(user) {
+      var now = Date.now();
+      var totalDelta = 0;
+      var hasInvest = false;
+
+      user.projects.forEach(function (p) {
+        if (!p.invested || p.invested <= 0) return;
+        hasInvest = true;
+
+        var cfg = RISK_CONFIG[p.riskLevel] || RISK_CONFIG.mid;
+        var isLoss = Math.random() < cfg.lossChance;
+        var rate = p.rateMin + Math.random() * (p.rateMax - p.rateMin);
+
+        var delta = p.invested * (rate / 100) / 50;
+        if (isLoss) delta = -delta * cfg.lossFactor * (0.8 + Math.random() * 0.4);
+        else delta = delta * (0.8 + Math.random() * 0.4);
+
+        delta = Math.round(delta * 100) / 100;
+        if (delta === 0) delta = isLoss ? -0.01 : 0.01;
+
+        p.profit = Math.round((p.profit + delta) * 100) / 100;
+        user.balance = Math.round((user.balance + delta) * 100) / 100;
+        p.settleCount = (p.settleCount || 0) + 1;
+        totalDelta += delta;
+
+        if (delta > 0) user.stats.totalProfit += delta;
+        else user.stats.totalLoss += -delta;
+        user.stats.settleCount++;
+
+        user.records.unshift({
+          id: 'r' + now + Math.random().toString(36).slice(2, 7),
+          date: nowStr(),
+          title: p.name + (delta > 0 ? ' · 收益结算' : ' · 亏损分摊'),
+          amount: delta,
+          balance: user.balance,
+          projectId: p.id
+        });
+
+        p.currentRate = Math.round((p.rateMin + Math.random() * (p.rateMax - p.rateMin)) * 10) / 10;
+        p.lastUpdate = now;
+      });
+
+      if (user.records.length > 200) user.records = user.records.slice(0, 200);
+      user.lastSettleAt = now;
+
+      if (now - user.lastRiskAdjustAt > 30000) {
+        var LEVELS = ['low', 'mid', 'high'];
+        user.projects.forEach(function (p) {
+          if (Math.random() < 0.25) {
+            var idx = LEVELS.indexOf(p.riskLevel);
+            var newIdx;
+            if (idx === 0) newIdx = 1;
+            else if (idx === 2) newIdx = 1;
+            else newIdx = Math.random() < 0.5 ? 0 : 2;
+            if (newIdx === idx) return;
+            var lvl = LEVELS[newIdx];
+            var cfg = RISK_CONFIG[lvl];
+            p.riskLevel = lvl;
+            p.riskLabel = cfg.label;
+            p.rateMin = cfg.rateMin;
+            p.rateMax = cfg.rateMax;
+            p.currentRate = Math.round((cfg.rateMin + Math.random() * (cfg.rateMax - cfg.rateMin)) * 10) / 10;
+          }
+        });
+        user.lastRiskAdjustAt = now;
+      }
+
+      return { delta: totalDelta, hasInvest: hasInvest };
+    }
+
+    /* ========= 渲染 ========= */
+    var deltaTimeout = null;
+    function showDelta(delta) {
+      if (delta === 0) return;
+      balanceDelta.textContent = (delta > 0 ? '+' : '') + fmt(delta);
+      balanceDelta.className = 'balance-delta' + (delta < 0 ? ' loss' : '');
+      if (deltaTimeout) clearTimeout(deltaTimeout);
+      deltaTimeout = setTimeout(function () { balanceDelta.classList.add('hide'); }, 2200);
+    }
+    function showFloat(delta) {
+      if (delta === 0) return;
+      floatTip.textContent = (delta > 0 ? '结算收益 +' : '结算亏损 ') + fmt(delta) + ' USDT';
+      floatTip.className = 'float-tip show' + (delta < 0 ? ' loss' : '');
+      clearTimeout(showFloat._t);
+      showFloat._t = setTimeout(function () { floatTip.className = 'float-tip'; }, 1800);
+    }
+
+    function render(user, delta) {
+      balanceText.textContent = fmt(user.balance) + ' USDT';
+      balanceText.className = 'balance-value' + (delta < 0 ? ' loss' : '');
+      if (delta) showDelta(delta);
+
+      listEl.innerHTML = '';
+      user.projects.forEach(function (p) {
+        var lvl = ['low','mid','high'].indexOf(p.riskLevel) >= 0 ? p.riskLevel : 'mid';
+        var hasInvest = p.invested > 0;
+        var el = document.createElement('div');
+        el.className = 'card-item' + (hasInvest ? ' invested' : '');
+
+        var actionsHtml = '';
+        if (hasInvest) {
+          actionsHtml =
+            '<div class="item-actions">' +
+              '<button class="btn-sm btn-invest" data-act="add" data-id="' + p.id + '">追加投资</button>' +
+              '<button class="btn-sm btn-withdraw" data-act="withdraw" data-id="' + p.id + '">撤资</button>' +
+            '</div>' +
+            '<div class="invest-info">' +
+              '<div><span class="k">本金</span> <span class="v">' + fmt(p.invested) + '</span></div>' +
+              '<div><span class="k">累计盈亏</span> <span class="v ' + (p.profit >= 0 ? 'pos' : 'neg') + '">' + (p.profit >= 0 ? '+' : '') + fmt(p.profit) + '</span></div>' +
+            '</div>';
+        } else {
+          actionsHtml =
+            '<div class="item-actions">' +
+              '<button class="btn-sm btn-invest" data-act="invest" data-id="' + p.id + '">立即投资</button>' +
+            '</div>';
+        }
+
+        el.innerHTML =
+          '<div class="item-row">' +
+            '<div class="item-main">' +
+              '<div class="item-name">' + esc(p.name) + '</div>' +
+              '<div class="item-tags">' +
+                '<span class="tag tag-industry">' + esc(p.industry) + '</span>' +
+                '<span class="tag risk-' + lvl + '">' + esc(p.riskLabel) + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="item-rate">' +
+              '<div class="rate-current ' + (p.currentRate >= 0 ? 'pos' : 'neg') + '">' + (p.currentRate >= 0 ? '+' : '') + fmt(p.currentRate, 1) + '%</div>' +
+              '<div class="rate-range">' + fmt(p.rateMin, 1) + '% - ' + fmt(p.rateMax, 1) + '%</div>' +
+            '</div>' +
+          '</div>' + actionsHtml;
+
+        listEl.appendChild(el);
+      });
+    }
+
+    /* ========= 投资 / 撤资 ========= */
+    function invest(pId, amount) {
+      var user = getCurrentUser();
+      if (!user) return { ok: false, msg: '登录已失效' };
+      var p = user.projects.filter(function (x) { return x.id === pId; })[0];
+      if (!p) return { ok: false, msg: '项目不存在' };
+
+      amount = Math.round(Number(amount) * 100) / 100;
+      if (isNaN(amount) || amount <= 0) return { ok: false, msg: '请输入有效的投资金额' };
+      if (amount > user.balance) return { ok: false, msg: '可用余额不足' };
+
+      user.balance = Math.round((user.balance - amount) * 100) / 100;
+      p.invested = Math.round((p.invested + amount) * 100) / 100;
+
+      user.records.unshift({
+        id: 'r' + Date.now() + Math.random().toString(36).slice(2, 7),
+        date: nowStr(),
+        title: '投资 · ' + p.name,
+        amount: -amount,
+        balance: user.balance,
+        projectId: p.id
+      });
+
+      saveCurrentUser(user);
+      return { ok: true };
+    }
+
+    function withdrawAll(pId) {
+      var user = getCurrentUser();
+      if (!user) return { ok: false, msg: '登录已失效' };
+      var p = user.projects.filter(function (x) { return x.id === pId; })[0];
+      if (!p) return { ok: false, msg: '项目不存在' };
+      if (p.invested <= 0) return { ok: false, msg: '当前无持仓' };
+
+      var total = Math.round((p.invested + p.profit) * 100) / 100;
+      user.balance = Math.round((user.balance + total) * 100) / 100;
+
+      user.records.unshift({
+        id: 'r' + Date.now() + Math.random().toString(36).slice(2, 7),
+        date: nowStr(),
+        title: '撤资 · ' + p.name,
+        amount: total,
+        balance: user.balance,
+        projectId: p.id
+      });
+
+      p.invested = 0;
+      p.profit = 0;
+      saveCurrentUser(user);
+      return { ok: true, total: total };
+    }
+
+    listEl.addEventListener('click', function (e) {
+      var btn = e.target.closest('button[data-act]');
+      if (!btn) return;
+      var pId = btn.getAttribute('data-id');
+      var act = btn.getAttribute('data-act');
+
+      if (act === 'invest' || act === 'add') {
+        var user = getCurrentUser();
+        if (!user) { window.location.href = 'index.html'; return; }
+        var p = user.projects.filter(function (x) { return x.id === pId; })[0];
+        showPrompt({
+          title: act === 'add' ? '追加投资' : '投资',
+          desc: '项目：' + esc(p.name) + '<br />可用余额：' + fmt(user.balance) + ' USDT',
+          placeholder: '请输入金额',
+          defaultValue: '',
+          inputType: 'number',
+          confirmText: '确认',
+          validate: function (v) {
+            var n = parseFloat(v);
+            if (isNaN(n) || n <= 0) return '请输入有效的金额';
+            if (n > user.balance) return '可用余额不足';
+            return null;
+          },
+          onConfirm: function (v) {
+            var r = invest(pId, v);
+            if (!r.ok) { showAlert({ title: '操作失败', desc: esc(r.msg) }); return; }
+            render(getCurrentUser(), 0);
+          }
+        });
+      } else if (act === 'withdraw') {
+        var user2 = getCurrentUser();
+        if (!user2) { window.location.href = 'index.html'; return; }
+        var p2 = user2.projects.filter(function (x) { return x.id === pId; })[0];
+        var total = Math.round((p2.invested + p2.profit) * 100) / 100;
+        showConfirm({
+          title: '确认撤资',
+          desc: '项目：' + esc(p2.name) + '<br />预计到账：<strong style="color:#8ce0ac;">' + fmt(total) + ' USDT</strong>',
+          confirmText: '确认撤资',
+          onConfirm: function () {
+            var r = withdrawAll(pId);
+            if (!r.ok) { showAlert({ title: '操作失败', desc: esc(r.msg) }); return; }
+            render(getCurrentUser(), 0);
+            showAlert({ title: '撤资成功', desc: '已到账 <strong style="color:#8ce0ac;">' + fmt(r.total) + ' USDT</strong>' });
+          }
+        });
+      }
+    });
+
+    render(currentUser, 0);
+
+    setInterval(function () {
+      var user = getCurrentUser();
+      if (!user) { window.location.href = 'index.html'; return; }
+      var res = settleOnce(user);
+      saveCurrentUser(user);
+      render(user, res.delta);
+      if (res.hasInvest && res.delta !== 0) showFloat(res.delta);
+    }, 5000);
+  })();
+</script>
+</body>
+</html>
