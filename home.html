@@ -220,8 +220,6 @@
 
     /* ============================================================
        真实市场风格概率配置（大起大落）
-       页面显示的 rateMin / rateMax 不变
-       实际结算时：盈亏方向对半、偶尔暴击
        ============================================================ */
     var RISK_CONFIG = {
       low:  {
@@ -369,8 +367,10 @@
 
     /* ============================================================
        结算逻辑
-       规则：赚/亏全部累积到本金（p.invested），余额（user.balance）不动
-             只有撤资时，才把本息一次性加回余额
+       规则：
+         - 赚/亏全部累积到本金（p.invested），余额不动
+         - 同时把本次盈亏累加进 p.profit（累计盈亏）
+         - 撤资时把本金一次性加回余额，p.profit 归零
        ============================================================ */
     function settleOnce(user) {
       var now = Date.now();
@@ -398,9 +398,12 @@
 
         if (Math.abs(delta) > maxAbsDelta) maxAbsDelta = Math.abs(delta);
 
-        // 盈亏都加进本金，余额不变
+        // 盈亏加进本金
         p.invested = Math.round((p.invested + delta) * 100) / 100;
         if (p.invested < 0) p.invested = 0;
+
+        // ⚠️ 关键：同步累加 p.profit（累计盈亏）
+        p.profit = Math.round(((p.profit || 0) + delta) * 100) / 100;
 
         p.settleCount = (p.settleCount || 0) + 1;
         totalDelta += delta;
@@ -419,6 +422,7 @@
           title: p.name + titleSuffix,
           amount: delta,
           invested: p.invested,
+          profit: p.profit,
           balance: user.balance,
           projectId: p.id
         });
@@ -497,6 +501,7 @@
 
         var actionsHtml = '';
         if (hasInvest) {
+          var profit = p.profit || 0;
           actionsHtml =
             '<div class="item-actions">' +
               '<button class="btn-sm btn-invest" data-act="add" data-id="' + p.id + '">追加投资</button>' +
@@ -504,7 +509,7 @@
             '</div>' +
             '<div class="invest-info">' +
               '<div><span class="k">当前本金</span> <span class="v">' + fmt(p.invested) + '</span></div>' +
-              '<div><span class="k">累计盈亏</span> <span class="v ' + (p.profit >= 0 ? 'pos' : 'neg') + '">' + (p.profit >= 0 ? '+' : '') + fmt(p.profit) + '</span></div>' +
+              '<div><span class="k">累计盈亏</span> <span class="v ' + (profit >= 0 ? 'pos' : 'neg') + '">' + (profit >= 0 ? '+' : '') + fmt(profit) + '</span></div>' +
             '</div>';
         } else {
           actionsHtml =
@@ -552,6 +557,7 @@
         title: '投资 · ' + p.name,
         amount: -amount,
         invested: p.invested,
+        profit: p.profit || 0,
         balance: user.balance,
         projectId: p.id
       });
@@ -576,10 +582,12 @@
         title: '撤资 · ' + p.name,
         amount: total,
         invested: 0,
+        profit: 0,
         balance: user.balance,
         projectId: p.id
       });
 
+      // 撤资：本金归零，累计盈亏归零
       p.invested = 0;
       p.profit = 0;
 
@@ -621,10 +629,15 @@
         if (!user2) { window.location.href = 'index.html'; return; }
         var p2 = user2.projects.filter(function (x) { return x.id === pId; })[0];
         var total = Math.round(p2.invested * 100) / 100;
-        var isProfit = total >= p2.invested;
+        var profit = p2.profit || 0;
+        var profitText = (profit >= 0 ? '+' : '') + fmt(profit);
+        var profitColor = profit >= 0 ? '#8ce0ac' : '#ff9aa9';
         showConfirm({
           title: '确认撤资',
-          desc: '项目：' + esc(p2.name) + '<br />当前本金（含盈亏）：<strong style="color:' + (isProfit ? '#8ce0ac' : '#ff9aa9') + ';">' + fmt(total) + ' USDT</strong><br />撤资后将返还到账户余额',
+          desc: '项目：' + esc(p2.name) +
+                '<br />当前本金：<strong style="color:#eef4ff;">' + fmt(total) + ' USDT</strong>' +
+                '<br />累计盈亏：<strong style="color:' + profitColor + ';">' + profitText + ' USDT</strong>' +
+                '<br /><br />撤资后本息将返还到账户余额',
           confirmText: '确认撤资',
           onConfirm: function () {
             var r = withdrawAll(pId);
