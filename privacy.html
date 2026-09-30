@@ -1,334 +1,274 @@
-<!-- ============================================================
+﻿<!-- ============================================================
      文件：privacy.html（账户设置）
      ============================================================ -->
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>空月平台 · 账户设置</title>
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',sans-serif; }
-    body { background: linear-gradient(145deg,#0b0f1a 0%,#141b2b 100%); min-height:100vh; color:#eef4ff; padding-bottom:2.5rem; }
-    .navbar {
-      position: sticky; top:0; z-index:100;
-      background: rgba(18,25,40,.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255,255,255,.06); padding: .85rem 1.1rem;
-      display:flex; align-items:center; justify-content:space-between; gap:1rem;
-      box-shadow: 0 8px 24px -12px rgba(0,0,0,.8);
-    }
-    .nav-brand { font-size:1.05rem; font-weight:600; letter-spacing:.02em; color:#eef4ff; text-shadow:0 2px 12px rgba(80,140,255,.25); white-space:nowrap; }
-    .nav-brand span { color:#5b8cff; font-weight:300; }
-    .nav-links { display:flex; gap:.25rem; }
-    .nav-link {
-      text-decoration:none; color:#8fa3c9; font-size:.82rem; font-weight:500;
-      padding:.45rem .9rem; border-radius:20px; transition:.22s; letter-spacing:.3px; white-space:nowrap;
-    }
-    .nav-link:hover { color:#c8d6f0; background:rgba(255,255,255,.05); }
-    .nav-link.active { color:#e3ecff; background:linear-gradient(135deg,#2a4270,#1b2d4e);
-      box-shadow: 0 4px 12px -4px rgba(0,0,0,.7), inset 0 0 0 1px rgba(120,160,255,.2); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>空月平台 · 账户设置</title>
+<script>(function(){try{var t=localStorage.getItem('kongyue_theme')||'dark';document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
+<style>
+:root{
+  --bg1:#0b0f1a;--bg2:#141b2b;
+  --card:rgba(18,25,40,.75);--card-solid:#121a28;
+  --border:rgba(255,255,255,.06);--border-h:rgba(120,160,255,.25);
+  --t:#eef4ff;--t2:#8fa3c9;--t3:#7f93b8;
+  --input:rgba(8,14,24,.7);--input-bd:#253248;
+  --nav-bg:rgba(18,25,40,.85);
+  --accent:#5b8cff;--accent2:#3b66b0;--accent-soft:rgba(91,140,255,.1);
+  --pos:#6ee7a0;--neg:#ff8a9a;
+  --pos-bg:rgba(60,200,120,.1);--pos-bd:rgba(80,220,140,.25);
+  --neg-bg:rgba(255,80,100,.1);--neg-bd:rgba(255,100,120,.25);
+  --info-bg:rgba(91,140,255,.08);--info-bd:rgba(91,140,255,.25);
+  --shadow-sm:0 10px 28px -16px rgba(0,0,0,.9);
+  --shadow-md:0 20px 50px -15px rgba(0,0,0,.8);
+  --glow:rgba(80,140,255,.25);
+  --ov:rgba(0,0,0,.7);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+[data-theme="light"]{
+  --bg1:#eef2f9;--bg2:#dbe4f2;
+  --card:rgba(255,255,255,.82);--card-solid:#ffffff;
+  --border:rgba(15,30,60,.08);--border-h:rgba(59,102,176,.25);
+  --t:#17253d;--t2:#5a6b85;--t3:#7a8aa3;
+  --input:rgba(240,244,250,.9);--input-bd:#cbd6e6;
+  --nav-bg:rgba(255,255,255,.82);
+  --accent:#3b66b0;--accent2:#2a4d8f;--accent-soft:rgba(59,102,176,.1);
+  --pos:#199f4f;--neg:#d92b3a;
+  --pos-bg:rgba(25,159,79,.1);--pos-bd:rgba(25,159,79,.22);
+  --neg-bg:rgba(217,43,58,.08);--neg-bd:rgba(217,43,58,.22);
+  --info-bg:rgba(59,102,176,.08);--info-bd:rgba(59,102,176,.22);
+  --shadow-sm:0 10px 28px -16px rgba(50,80,140,.25);
+  --shadow-md:0 20px 50px -15px rgba(50,80,140,.25);
+  --glow:rgba(90,140,220,.2);
+  --ov:rgba(30,50,90,.35);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:linear-gradient(145deg,var(--bg1) 0%,var(--bg2) 100%);min-height:100vh;color:var(--t);padding-bottom:2.5rem;position:relative;overflow-x:hidden;
+  opacity:0;transform:translateY(6px);
+  transition:opacity .45s var(--ease),transform .45s var(--ease),background .5s var(--ease),color .3s var(--ease)}
+body.page-loaded{opacity:1;transform:translateY(0)}
+body.page-leaving{opacity:0;transform:translateY(-6px) scale(.99)}
+body::before{content:'';position:fixed;top:-30%;left:-20%;width:70%;height:70%;background:radial-gradient(circle,var(--glow) 0%,transparent 65%);filter:blur(80px);pointer-events:none;z-index:0;opacity:.6;animation:floatA 24s ease-in-out infinite}
+@keyframes floatA{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(70px,-50px) scale(1.12)}}
 
-    .container { max-width:560px; margin:0 auto; padding:1.4rem 1.1rem 0; }
-    .back-link {
-      display:inline-flex; align-items:center; gap:.35rem;
-      font-size:.78rem; color:#8fa3c9; text-decoration:none;
-      margin-bottom:1rem; transition:.2s; letter-spacing:.3px;
-    }
-    .back-link:hover { color:#c8d6f0; }
-    .page-title { font-size:1.35rem; font-weight:600; letter-spacing:-.01em; margin-bottom:.25rem; }
-    .page-sub { font-size:.75rem; color:#7f93b8; margin-bottom:1.35rem; letter-spacing:.3px; }
+.navbar{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:.85rem 1.1rem;box-shadow:0 8px 24px -12px rgba(0,0,0,.35);transition:background .5s var(--ease),border-color .3s var(--ease)}
+.nav-inner{max-width:960px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.brand{font-size:1.05rem;font-weight:600;letter-spacing:.02em;color:var(--t);white-space:nowrap;display:flex;align-items:center;gap:8px}
+.brand::before{content:'';width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 12px var(--accent-soft);transition:transform .5s var(--ease)}
+.brand:hover::before{transform:rotate(180deg) scale(1.1)}
+.brand span{color:var(--accent);font-weight:300}
+.nav-links{display:flex;gap:.25rem;align-items:center}
+.nav-link{text-decoration:none;color:var(--t2);font-size:.82rem;font-weight:500;padding:.45rem .9rem;border-radius:20px;transition:all .3s var(--ease);letter-spacing:.3px;white-space:nowrap}
+.nav-link:hover{color:var(--t);background:rgba(127,127,127,.08);transform:translateY(-1px)}
+.nav-link.active{color:#fff;background:linear-gradient(135deg,var(--accent2),var(--accent));box-shadow:0 4px 12px -4px rgba(59,102,176,.6),inset 0 0 0 1px rgba(255,255,255,.15)}
+.theme-btn{width:34px;height:34px;border-radius:50%;background:var(--input);border:1px solid var(--border);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .35s var(--ease);flex-shrink:0;margin-left:.4rem}
+.theme-btn:hover{color:var(--accent);border-color:var(--accent);transform:rotate(20deg) scale(1.08)}
+.theme-btn svg{width:15px;height:15px}
+[data-theme="dark"] .i-sun{display:block}[data-theme="dark"] .i-moon{display:none}
+[data-theme="light"] .i-sun{display:none}[data-theme="light"] .i-moon{display:block}
 
-    .form-card {
-      background: rgba(18,25,40,.78); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-radius:26px; padding:1.5rem 1.35rem 1.4rem;
-      border:1px solid rgba(255,255,255,.07);
-      box-shadow: 0 20px 44px -20px rgba(0,0,0,.95), inset 0 1px 2px rgba(255,255,255,.05);
-    }
-    .field { margin-bottom:1.15rem; }
-    .field label {
-      display:block; font-size:.68rem; font-weight:600; text-transform:uppercase;
-      letter-spacing:1.1px; color:#9db1d4; margin-bottom:.45rem;
-    }
-    .field input {
-      width:100%; background:rgba(8,14,24,.7); border:1px solid #253248;
-      border-radius:30px; padding:.78rem 1.15rem; color:#eef4ff; font-size:.9rem;
-      outline:none; transition:.25s; box-shadow: inset 0 3px 8px rgba(0,0,0,.5); font-family:inherit;
-    }
-    .field input:focus { border-color:#5b8cff; box-shadow: 0 0 0 3px rgba(91,140,255,.15), inset 0 3px 8px rgba(0,0,0,.5); }
-    .field input::placeholder { color:#475d82; }
-    .field input:disabled { opacity:.6; cursor:not-allowed; }
-    .field .hint { font-size:.68rem; color:#6b7fa3; margin-top:.45rem; padding-left:.3rem; letter-spacing:.3px; }
+.container{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:1.4rem 1.1rem 0}
+.back-link{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--t2);text-decoration:none;margin-bottom:1rem;transition:all .3s var(--ease);letter-spacing:.3px;animation:upIn .6s .05s var(--ease) both}
+.back-link:hover{color:var(--accent);transform:translateX(-3px)}
+@keyframes upIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.page-title{font-size:1.35rem;font-weight:600;letter-spacing:-.01em;margin-bottom:.3rem;animation:upIn .7s .1s var(--ease) both}
+.page-sub{font-size:.75rem;color:var(--t2);margin-bottom:1.4rem;letter-spacing:.3px;animation:upIn .7s .15s var(--ease) both}
 
-    .btn-row { display:flex; gap:.65rem; margin-top:1.4rem; }
-    .btn {
-      flex:1; border:none; padding:.8rem; border-radius:40px; font-weight:600; font-size:.88rem;
-      cursor:pointer; transition:.25s; letter-spacing:1px; text-transform:uppercase; font-family:inherit;
-    }
-    .btn-primary {
-      background:linear-gradient(135deg,#1e2e4a,#15223a); color:#e3ecff;
-      box-shadow: 0 8px 20px -6px rgba(0,0,0,.6), inset 0 0 0 1px rgba(120,160,255,.15);
-      border:1px solid rgba(120,160,255,.1);
-    }
-    .btn-primary:hover { background:linear-gradient(135deg,#253c5e,#1a2a44); transform:scale(1.02); }
-    .btn-primary:active { transform:scale(.97); }
-    .btn-ghost {
-      background:rgba(255,255,255,.04); color:#8fa3c9;
-      border:1px solid rgba(255,255,255,.07); flex:0 0 38%;
-    }
-    .btn-ghost:hover { background:rgba(255,255,255,.08); color:#b8c9e8; }
+.form-card{position:relative;background:var(--card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-radius:26px;padding:1.6rem 1.5rem 1.5rem;border:1.5px solid var(--border);
+  box-shadow:var(--shadow-sm);transition:all .4s var(--ease);
+  animation:cardIn .7s .2s var(--ease) both;overflow:hidden}
+.form-card::before{content:'';position:absolute;top:-50%;right:-20%;width:60%;height:200%;background:radial-gradient(circle,var(--accent-soft) 0%,transparent 60%);pointer-events:none;opacity:.5}
+.form-card:hover{box-shadow:var(--shadow-md);border-color:var(--border-h)}
+@keyframes cardIn{from{opacity:0;transform:translateY(28px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.field{margin-bottom:1.15rem;position:relative;z-index:1}
+.field label{display:block;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:1.1px;color:var(--t2);margin-bottom:.45rem}
+.field input{width:100%;background:var(--input);border:1.5px solid var(--input-bd);border-radius:30px;padding:.82rem 1.15rem;color:var(--t);font-size:.9rem;outline:none;font-family:inherit;transition:all .3s var(--ease)}
+.field input:hover{border-color:var(--border-h)}
+.field input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--info-bg);transform:translateY(-1px)}
+.field input::placeholder{color:var(--t3)}
+.field input:disabled{opacity:.55;cursor:not-allowed;background:rgba(127,127,127,.05)}
+.field .hint{font-size:.68rem;color:var(--t3);margin-top:.45rem;padding-left:.35rem;letter-spacing:.3px}
 
-    .danger-zone { margin-top:1.5rem; padding-top:1.2rem; border-top:1px dashed rgba(255,80,100,.2); }
-    .danger-title {
-      font-size:.72rem; color:#ff9aa9; letter-spacing:.5px; margin-bottom:.7rem;
-      text-transform:uppercase; font-weight:600;
-    }
-    .danger-desc { font-size:.7rem; color:#7f93b8; line-height:1.6; margin-bottom:.85rem; letter-spacing:.2px; }
-    .btn-danger {
-      width:100%; background:rgba(255,80,100,.08); color:#ff9aa9;
-      border:1px solid rgba(255,100,120,.25);
-      padding:.75rem; border-radius:40px; font-weight:600; font-size:.82rem;
-      cursor:pointer; transition:.25s; letter-spacing:.6px; font-family:inherit;
-    }
-    .btn-danger:hover { background:rgba(255,80,100,.14); }
+.btn-row{display:flex;gap:.7rem;margin-top:1.5rem;position:relative;z-index:1}
+.btn{position:relative;flex:1;border:none;padding:.85rem;border-radius:40px;font-weight:600;font-size:.88rem;cursor:pointer;transition:all .3s var(--ease);letter-spacing:1px;text-transform:uppercase;font-family:inherit;overflow:hidden}
+.btn-primary{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;box-shadow:0 8px 20px -6px rgba(59,102,176,.5),inset 0 0 0 1px rgba(255,255,255,.15)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px -8px rgba(59,102,176,.7)}
+.btn-primary:active{transform:translateY(0) scale(.98)}
+.btn-primary::after{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.3),transparent);transform:skewX(-20deg);transition:left .7s var(--ease)}
+.btn-primary:hover::after{left:120%}
+.btn-ghost{background:rgba(127,127,127,.08);color:var(--t2);border:1px solid var(--border);flex:0 0 40%}
+.btn-ghost:hover{background:rgba(127,127,127,.15);color:var(--t);transform:translateY(-2px)}
+.btn-ghost:active{transform:translateY(0) scale(.98)}
 
-    /* ========= 自定义弹窗通用 ========= */
-    .modal-overlay {
-      position:fixed; inset:0; background:rgba(0,0,0,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-      display:flex; align-items:center; justify-content:center; z-index:900;
-      animation:fadeIn .18s ease; padding:1.2rem;
-    }
-    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-    .modal {
-      background:rgba(18,26,42,.96); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-      border-radius:24px; padding:1.5rem 1.4rem 1.3rem; max-width:340px; width:100%;
-      box-shadow: 0 40px 80px -20px rgba(0,0,0,.9), 0 0 0 1px rgba(120,160,255,.1);
-      border:1px solid rgba(255,255,255,.05);
-      animation: slideUp .25s cubic-bezier(.16,1,.3,1);
-    }
-    @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
-    .modal h3 { font-size:1.05rem; color:#eef4ff; margin-bottom:.5rem; font-weight:600; letter-spacing:-.01em; }
-    .modal .modal-desc { font-size:.8rem; color:#8fa3c9; line-height:1.6; margin-bottom:1.1rem; letter-spacing:.2px; }
-    .modal-actions { display:flex; gap:.6rem; margin-top:.8rem; }
-    .modal-actions button {
-      flex:1; border:none; padding:.7rem; border-radius:30px; font-weight:600; font-size:.85rem;
-      cursor:pointer; transition:.2s; letter-spacing:.6px; font-family:inherit;
-    }
-    .modal-btn-primary {
-      background:linear-gradient(135deg,#2a4270,#1b2d4e); color:#e3ecff;
-      box-shadow: 0 6px 14px -4px rgba(0,0,0,.6), inset 0 0 0 1px rgba(120,160,255,.15);
-    }
-    .modal-btn-primary:hover { background:linear-gradient(135deg,#345288,#223a5e); transform:scale(1.02); }
-    .modal-btn-ghost { background:rgba(255,255,255,.04); color:#8fa3c9; border:1px solid rgba(255,255,255,.07); }
-    .modal-btn-ghost:hover { background:rgba(255,255,255,.08); color:#b8c9e8; }
-    .modal-btn-danger {
-      background:rgba(255,80,100,.1); color:#ff9aa9; border:1px solid rgba(255,100,120,.28);
-    }
-    .modal-btn-danger:hover { background:rgba(255,80,100,.16); }
+.danger-zone{margin-top:1.8rem;padding-top:1.5rem;border-top:1px dashed var(--border);position:relative;z-index:1}
+.danger-title{font-size:.72rem;color:var(--neg);letter-spacing:.6px;margin-bottom:.7rem;text-transform:uppercase;font-weight:700}
+.danger-desc{font-size:.72rem;color:var(--t2);line-height:1.7;margin-bottom:1rem;letter-spacing:.2px}
+.btn-danger{width:100%;background:linear-gradient(135deg,#c92e3e,var(--neg));color:#fff;border:none;padding:.85rem;border-radius:40px;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .3s var(--ease);letter-spacing:.6px;font-family:inherit;box-shadow:0 8px 20px -6px rgba(217,43,58,.5)}
+.btn-danger:hover{transform:translateY(-2px);filter:brightness(1.05);box-shadow:0 14px 28px -8px rgba(217,43,58,.7)}
+.btn-danger:active{transform:translateY(0) scale(.98)}
 
-    /* Toast */
-    .toast {
-      position:fixed; left:50%; bottom:2rem; transform:translate(-50%,20px);
-      background:rgba(18,26,42,.96); color:#8ce0ac;
-      border:1px solid rgba(80,220,140,.3);
-      padding:.7rem 1.4rem; border-radius:30px; font-size:.82rem; font-weight:500;
-      box-shadow: 0 16px 40px -12px rgba(0,0,0,.9);
-      opacity:0; pointer-events:none; transition:.3s; z-index:500; letter-spacing:.3px;
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    }
-    .toast.show { opacity:1; transform:translate(-50%,0); }
+.ov{position:fixed;inset:0;background:var(--ov);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;z-index:900;padding:1.2rem;animation:fadeIn .25s var(--ease)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--card-solid);border-radius:28px;padding:1.6rem 1.5rem 1.4rem;max-width:400px;width:100%;box-shadow:0 40px 80px -20px rgba(0,0,0,.7);border:1px solid var(--border);animation:modalIn .4s var(--ease)}
+@keyframes modalIn{from{opacity:0;transform:translateY(28px) scale(.94)}60%{transform:translateY(-2px) scale(1.01)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal h3{font-size:1.1rem;color:var(--t);margin-bottom:.4rem;font-weight:600}
+.modal-desc{font-size:.82rem;color:var(--t2);line-height:1.7;margin-bottom:1.1rem}
+.modal-actions{display:flex;gap:.6rem;margin-top:.4rem}
+.modal-actions button{flex:1;border:none;padding:.8rem;border-radius:30px;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .3s var(--ease);letter-spacing:.5px;font-family:inherit}
+.modal-btn-primary{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;box-shadow:0 6px 14px -4px rgba(59,102,176,.5)}
+.modal-btn-primary:hover{transform:translateY(-2px)}
+.modal-btn-ghost{background:rgba(127,127,127,.08);color:var(--t2);border:1px solid var(--border)}
+.modal-btn-ghost:hover{background:rgba(127,127,127,.15);color:var(--t)}
+.modal-btn-danger{background:linear-gradient(135deg,#c92e3e,var(--neg));color:#fff;box-shadow:0 6px 14px -4px rgba(217,43,58,.5)}
+.modal-btn-danger:hover{transform:translateY(-2px);filter:brightness(1.05)}
 
-    @media (max-width:400px) {
-      .nav-link { padding:.4rem .7rem; font-size:.76rem; }
-      .page-title { font-size:1.2rem; }
-      .form-card { padding:1.25rem 1.1rem 1.2rem; }
-    }
-  </style>
+.toast{position:fixed;left:50%;bottom:2rem;transform:translate(-50%,20px) scale(.95);background:var(--card-solid);color:var(--pos);border:1px solid var(--pos-bd);padding:.75rem 1.5rem;border-radius:30px;font-size:.82rem;font-weight:600;box-shadow:0 20px 50px -15px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:all .4s var(--ease);z-index:500;letter-spacing:.3px}
+.toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
+
+@media(min-width:760px){
+  .container{padding:1.8rem 1.5rem 0}
+  .navbar{padding:.95rem 1.5rem}
+  .brand{font-size:1.15rem}
+  .nav-link{font-size:.85rem;padding:.5rem 1.1rem}
+}
+@media(max-width:420px){
+  .navbar{padding:.75rem .9rem}
+  .brand{font-size:.95rem}
+  .brand::before{width:16px;height:16px}
+  .nav-link{padding:.4rem .7rem;font-size:.76rem}
+  .container{padding:1.1rem .9rem 0}
+  .page-title{font-size:1.2rem}
+  .form-card{padding:1.3rem 1.15rem 1.2rem;border-radius:22px}
+}
+</style>
 </head>
 <body>
-
 <nav class="navbar">
-  <div class="nav-brand">空月 <span>·</span> 平台</div>
-  <div class="nav-links">
-    <a href="home.html" class="nav-link">主页</a>
-    <a href="records.html" class="nav-link">记录</a>
-    <a href="profile.html" class="nav-link">个人</a>
+  <div class="nav-inner">
+    <div class="brand">空月 <span>·</span> 平台</div>
+    <div class="nav-links">
+      <a href="home.html" class="nav-link">主页</a>
+      <a href="records.html" class="nav-link">记录</a>
+      <a href="profile.html" class="nav-link">个人</a>
+      <button class="theme-btn" onclick="toggleTheme()" aria-label="切换主题">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
   </div>
 </nav>
 
-<div class="container">
-  <a class="back-link" href="profile.html">‹ 返回个人中心</a>
-
+<main class="container">
+  <a class="back-link" href="profile.html">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    返回个人中心
+  </a>
   <div class="page-title">账户设置</div>
-  <div class="page-sub">修改账号昵称与登录密码</div>
+  <div class="page-sub">修改账号昵称与登录信息</div>
 
   <div class="form-card">
     <div class="field">
       <label for="nickInput">账号昵称</label>
-      <input type="text" id="nickInput" placeholder="请输入新的昵称" maxlength="20" />
+      <input type="text" id="nickInput" placeholder="请输入新的昵称" maxlength="20">
       <div class="hint">最长 20 个字符，将显示在个人中心</div>
     </div>
-
     <div class="field">
       <label>用户名</label>
-      <input type="text" id="unameInput" disabled />
+      <input type="text" id="unameInput" disabled>
       <div class="hint">用户名注册后不可修改</div>
     </div>
-
     <div class="btn-row">
       <button type="button" class="btn btn-ghost" id="resetBtn">重置</button>
       <button type="button" class="btn btn-primary" id="saveBtn">保存</button>
     </div>
-
     <div class="danger-zone">
       <div class="danger-title">注销账号</div>
-      <div class="danger-desc">注销后该账号的所有数据将被永久删除，且无法恢复。</div>
+      <div class="danger-desc">注销后该账号的所有数据（余额、投资、记录）将被永久删除，且无法恢复。</div>
       <button type="button" class="btn-danger" id="logoutBtn">注销当前账号</button>
     </div>
   </div>
-</div>
+</main>
 
 <div id="modalRoot"></div>
 <div id="toast" class="toast">已保存</div>
 
 <script>
-  (function () {
-    "use strict";
-    var USERS_KEY = 'kongyue_users_v1';
-    var SESSION_KEY = 'kongyue_session_v1';
-
-    function loadUsers() {
-      try { var raw = localStorage.getItem(USERS_KEY); return raw ? JSON.parse(raw) : {}; }
-      catch (e) { return {}; }
-    }
-    function saveUsers(u) {
-      try { localStorage.setItem(USERS_KEY, JSON.stringify(u)); return true; }
-      catch (e) { return false; }
-    }
-    function getSession() {
-      try { return localStorage.getItem(SESSION_KEY) || null; } catch (e) { return null; }
-    }
-    function clearSession() {
-      try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
-    }
-    function getCurrentUser() {
-      var s = getSession(); if (!s) return null;
-      var users = loadUsers(); return users[s] || null;
-    }
-
-    var currentUser = getCurrentUser();
-    if (!currentUser) { window.location.href = 'index.html'; return; }
-
-    var nickInput = document.getElementById('nickInput');
-    var unameInput = document.getElementById('unameInput');
-    var saveBtn = document.getElementById('saveBtn');
-    var resetBtn = document.getElementById('resetBtn');
-    var logoutBtn = document.getElementById('logoutBtn');
-    var toastEl = document.getElementById('toast');
-    var modalRoot = document.getElementById('modalRoot');
-
-    function toast(msg) {
-      toastEl.textContent = msg;
-      toastEl.className = 'toast show';
-      clearTimeout(toast._t);
-      toast._t = setTimeout(function () { toastEl.className = 'toast'; }, 1800);
-    }
-
-    /* ========= 弹窗 ========= */
-    function showAlert(opts) {
-      var ov = document.createElement('div');
-      ov.className = 'modal-overlay';
-      ov.innerHTML =
-        '<div class="modal">' +
-          '<h3>' + (opts.title || '提示') + '</h3>' +
-          (opts.desc ? '<div class="modal-desc">' + opts.desc + '</div>' : '') +
-          '<div class="modal-actions">' +
-            '<button class="modal-btn-primary" data-act="ok">' + (opts.confirmText || '确定') + '</button>' +
-          '</div>' +
-        '</div>';
-      modalRoot.appendChild(ov);
-      var okBtn = ov.querySelector('[data-act="ok"]');
-      function close() { ov.remove(); if (opts.onConfirm) opts.onConfirm(); }
-      okBtn.addEventListener('click', close);
-      ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
-      setTimeout(function () { okBtn.focus(); }, 50);
-    }
-
-    function showConfirm(opts) {
-      var ov = document.createElement('div');
-      ov.className = 'modal-overlay';
-      var btnClass = opts.type === 'danger' ? 'modal-btn-danger' : 'modal-btn-primary';
-      ov.innerHTML =
-        '<div class="modal">' +
-          '<h3>' + (opts.title || '确认操作') + '</h3>' +
-          (opts.desc ? '<div class="modal-desc">' + opts.desc + '</div>' : '') +
-          '<div class="modal-actions">' +
-            '<button class="modal-btn-ghost" data-act="cancel">' + (opts.cancelText || '取消') + '</button>' +
-            '<button class="' + btnClass + '" data-act="ok">' + (opts.confirmText || '确定') + '</button>' +
-          '</div>' +
-        '</div>';
-      modalRoot.appendChild(ov);
-      function close() { ov.remove(); }
-      ov.querySelector('[data-act="cancel"]').addEventListener('click', close);
-      ov.querySelector('[data-act="ok"]').addEventListener('click', function () {
-        close();
-        if (opts.onConfirm) opts.onConfirm();
-      });
-      ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
-    }
-
-    nickInput.value = currentUser.nickname || currentUser.username;
-    unameInput.value = currentUser.username;
-
-    saveBtn.addEventListener('click', function () {
-      var u = getCurrentUser();
-      if (!u) { window.location.href = 'index.html'; return; }
-
-      var nick = nickInput.value.trim();
-      if (!nick) { showAlert({ title: '保存失败', desc: '昵称不能为空' }); nickInput.focus(); return; }
-      if (nick.length > 20) { showAlert({ title: '保存失败', desc: '昵称最长 20 个字符' }); nickInput.focus(); return; }
-
-      u.nickname = nick;
-      var users = loadUsers(); users[u.username] = u;
-      if (!saveUsers(users)) { showAlert({ title: '保存失败', desc: '数据写入失败，请重试' }); return; }
-      currentUser = u;
-      toast('已保存');
-      setTimeout(function () { window.location.href = 'profile.html'; }, 900);
-    });
-
-    resetBtn.addEventListener('click', function () {
-      var u = getCurrentUser(); if (!u) return;
-      nickInput.value = u.nickname || u.username;
-      toast('已重置');
-    });
-
-    logoutBtn.addEventListener('click', function () {
-      var u = getCurrentUser();
-      if (!u) { window.location.href = 'index.html'; return; }
-
+window.toggleTheme=function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('kongyue_theme',n)}catch(e){}};
+document.addEventListener('DOMContentLoaded',function(){document.body.classList.add('page-loaded')});
+document.addEventListener('click',function(e){var a=e.target.closest('a[href$=".html"]');if(!a||a.target==='_blank')return;e.preventDefault();document.body.classList.add('page-leaving');setTimeout(function(){window.location.href=a.href},220)});
+(function(){
+"use strict";
+var UK='kongyue_users_v1',SK='kongyue_session_v1';
+function LU(){try{var r=localStorage.getItem(UK);return r?JSON.parse(r):{}}catch(e){return{}}}
+function SU(u){try{localStorage.setItem(UK,JSON.stringify(u));return true}catch(e){return false}}
+function GS(){try{return localStorage.getItem(SK)||null}catch(e){return null}}
+function CS(){try{localStorage.removeItem(SK)}catch(e){}}
+function GCU(){var s=GS();if(!s)return null;var u=LU();return u[s]||null}
+var cu=GCU();
+if(!cu){window.location.href='index.html';return}
+var nickInput=document.getElementById('nickInput'),unameInput=document.getElementById('unameInput'),saveBtn=document.getElementById('saveBtn'),resetBtn=document.getElementById('resetBtn'),logoutBtn=document.getElementById('logoutBtn'),toastEl=document.getElementById('toast'),modalRoot=document.getElementById('modalRoot');
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function toast(m){toastEl.textContent=m;toastEl.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){toastEl.classList.remove('show')},1800)}
+function showAlert(o){
+  var ov=document.createElement('div');ov.className='ov';
+  ov.innerHTML='<div class="modal"><h3>'+esc(o.title||'提示')+'</h3>'+(o.desc?'<div class="modal-desc">'+o.desc+'</div>':'')+'<div class="modal-actions"><button class="modal-btn-primary" data-act="ok">确定</button></div></div>';
+  modalRoot.appendChild(ov);
+  function close(){ov.style.opacity='0';ov.style.transition='opacity .2s';setTimeout(function(){ov.remove();if(o.onConfirm)o.onConfirm()},180)}
+  ov.querySelector('[data-act="ok"]').addEventListener('click',close);
+  ov.addEventListener('click',function(e){if(e.target===ov)close()});
+}
+function showConfirm(o){
+  var ov=document.createElement('div');ov.className='ov';
+  var bc=o.type==='danger'?'modal-btn-danger':'modal-btn-primary';
+  ov.innerHTML='<div class="modal"><h3>'+esc(o.title||'确认')+'</h3>'+(o.desc?'<div class="modal-desc">'+o.desc+'</div>':'')+'<div class="modal-actions"><button class="modal-btn-ghost" data-act="cancel">取消</button><button class="'+bc+'" data-act="ok">'+esc(o.confirmText||'确定')+'</button></div></div>';
+  modalRoot.appendChild(ov);
+  function close(){ov.style.opacity='0';ov.style.transition='opacity .2s';setTimeout(function(){ov.remove()},180)}
+  ov.querySelector('[data-act="cancel"]').addEventListener('click',close);
+  ov.querySelector('[data-act="ok"]').addEventListener('click',function(){close();if(o.onConfirm)setTimeout(o.onConfirm,180)});
+  ov.addEventListener('click',function(e){if(e.target===ov)close()});
+}
+nickInput.value=cu.nickname||cu.username;
+unameInput.value=cu.username;
+saveBtn.addEventListener('click',function(){
+  var u=GCU();if(!u){window.location.href='index.html';return}
+  var nk=nickInput.value.trim();
+  if(!nk){showAlert({title:'保存失败',desc:'昵称不能为空'});nickInput.focus();return}
+  if(nk.length>20){showAlert({title:'保存失败',desc:'昵称最长 20 个字符'});nickInput.focus();return}
+  u.nickname=nk;
+  var users=LU();users[u.username]=u;
+  if(!SU(users)){showAlert({title:'保存失败',desc:'数据写入失败，请重试'});return}
+  cu=u;toast('已保存');
+  document.body.classList.add('page-leaving');
+  setTimeout(function(){window.location.href='profile.html'},900);
+});
+resetBtn.addEventListener('click',function(){
+  var u=GCU();if(!u)return;
+  nickInput.value=u.nickname||u.username;
+  toast('已重置');
+});
+logoutBtn.addEventListener('click',function(){
+  var u=GCU();if(!u){window.location.href='index.html';return}
+  showConfirm({
+    title:'注销账号',
+    desc:'确定要注销账号「<strong style="color:var(--t)">'+esc(u.username)+'</strong>」吗？<br><br>该账号的所有数据将被<strong style="color:var(--neg)">永久删除</strong>，无法恢复。',
+    type:'danger',confirmText:'确认注销',
+    onConfirm:function(){
       showConfirm({
-        title: '注销账号',
-        desc: '确定要注销账号「<strong style="color:#eef4ff;">' + u.username + '</strong>」吗？<br /><br />该账号的所有数据将被<strong style="color:#ff9aa9;">永久删除</strong>，无法恢复。',
-        type: 'danger',
-        confirmText: '确认注销',
-        onConfirm: function () {
-          showConfirm({
-            title: '再次确认',
-            desc: '此操作不可撤销，是否继续？',
-            type: 'danger',
-            confirmText: '永久删除',
-            onConfirm: function () {
-              var users = loadUsers();
-              delete users[u.username];
-              saveUsers(users);
-              clearSession();
-              toast('已注销，正在退出…');
-              setTimeout(function () { window.location.href = 'index.html'; }, 900);
-            }
-          });
+        title:'再次确认',desc:'此操作不可撤销，是否继续？',type:'danger',confirmText:'永久删除',
+        onConfirm:function(){
+          var users=LU();delete users[u.username];SU(users);
+          CS();toast('已注销，正在退出…');
+          document.body.classList.add('page-leaving');
+          setTimeout(function(){window.location.href='index.html'},900);
         }
       });
-    });
-  })();
+    }
+  });
+});
+})();
 </script>
 </body>
 </html>
